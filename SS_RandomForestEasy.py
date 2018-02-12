@@ -16,10 +16,15 @@ X.Ticket = X.Ticket.map(lambda x: x[0]) # This transforms Ticket to features of 
 X["Ticket"].replace(['A', 'P', 'S', 'C', 'W', 'F', 'L', '1','2','3','4','5','6','7','8','9'], [10,11,12,13,14,15,16,1,2,3,4,5,6,7,8,9], inplace=True) # To numerical values
 
 
-numeric_variables = list(X.dtypes[X.dtypes!= 'object'].index) # Take only numerical variables
-
 X["Age"].fillna(X.Age.mean(), inplace=True)
 
+# #Age to category of age
+interval = (0, 5, 12, 18, 25, 35, 60, 120)
+cats = [0,1,2,3,4,5,6]
+X["Age_cat"] = pd.cut(X.Age, interval, labels=cats)
+X["Age_cat"].head()
+
+numeric_variables = list(X.dtypes[X.dtypes!= 'object'].index) # Take only numerical variables
 
 ###### Model and test: runs to 1 for fast results
 runs = 100 # Do it over multiple runs to get estimate of "true" accuracy distribution
