@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 import numpy as np
 
 
-X = pd.read_csv("train.csv")
+X = pd.read_csv("../data/train.csv")
 y = X["Survived"]
 del X["Survived"] # Delete because it is numeric and we want to index independent numerical
 
