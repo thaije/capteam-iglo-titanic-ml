@@ -64,13 +64,20 @@ train_X["Age_cat"] = pd.cut(train_X.Age, interval, labels=cats)
 train_X["Age_cat"].head()
 
 #Categorize embarked
-train_X["Age"].fillna(train_X.Age.mean(), inplace=True)
+freq_port = train_X.Embarked.dropna().mode()[0]
+print ("Replacing NaN values of embarked with most frequent port:", freq_port)
+train_X['Embarked'] = train_X['Embarked'].fillna(freq_port)
 
-# Age to category of age
-interval = (0, 5, 12, 18, 25, 35, 60, 120)
-cats = [0,1,2,3,4,5,6]
-train_X["Age_cat"] = pd.cut(train_X.Age, interval, labels=cats)
-train_X["Age_cat"].head()
+# we have three types of ports
+print(pd.unique(train_X['Embarked']))
+
+# replace port numbers with category ID
+train_X["Embarked_cat"] = train_X["Embarked"]
+train_X["Embarked_cat"].replace(['S','C','Q'], [1,2,3], inplace=True) # To numerical values
+print(pd.unique(train_X['Embarked_cat']))
+
+# preview the data
+train_X.head()
 
 
 #Fares in numerical categories
