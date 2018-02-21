@@ -58,9 +58,9 @@ def readInData():
 
 # TODO: Select the most predictive features using scikit learn or something
 def featureSelection(data):
-    
-    # return data.drop(['Age*Class','SibSp','Parch'], axis=1)
-    return data
+
+    return data.drop(['Age*Class','SibSp','Parch'], axis=1)
+    # return data
 
 
 # TODO: train model(s) on the data using CV
