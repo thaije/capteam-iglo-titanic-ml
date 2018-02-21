@@ -29,8 +29,8 @@ from sklearn.tree import DecisionTreeClassifier
 # For example, running this (by clicking run or pressing Shift+Enter) will list the files in the input directory
 
 # read in data from csv files
-train_df = pd.read_csv('train.csv')
-test_df = pd.read_csv('test.csv')
+train_df = pd.read_csv('data/train.csv')
+test_df = pd.read_csv('data/test.csv')
 combine = [train_df, test_df]
 
 # preview the data
