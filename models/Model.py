@@ -10,3 +10,6 @@ class Model(object):
     # Training data should probably be a split of features and labels [X, Y]
     def train(self, x, y, model_args):
         pass
+
+    def test(self, X_test, labels):
+        pass
