@@ -5,7 +5,6 @@ from sklearn import preprocessing, svm
 from sklearn.neural_network import MLPClassifier
 
 import CrossValidate as CV
-import ParameterTesting as PT
 
 if __name__ == '__main__':
     train = pd.read_csv('Data\\train.csv')
