@@ -6,6 +6,7 @@ import re
 from seaborn.categorical import _CategoricalPlotter, remove_na
 import matplotlib as mpl
 from matplotlib.backends.backend_pdf import PdfPages
+import os
 
 # Make some functions to epress histograms and percentage plots
 class _CategoricalStatPlotter(_CategoricalPlotter):
@@ -266,7 +267,8 @@ def multipage(filename, figs=None, dpi=200):
 # Plot palette for all plots
 pal = 'Paired'
 
-X = pd.read_csv("../data/train.csv")
+
+X = pd.read_csv(os.getcwd()+"\\data\\train.csv")
 
 # Most basic statistics
 stats_table = X.describe # ~38% survived
