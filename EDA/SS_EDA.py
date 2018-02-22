@@ -268,7 +268,7 @@ def multipage(filename, figs=None, dpi=200):
 pal = 'Paired'
 
 
-X = pd.read_csv(os.getcwd()+"\\data\\train.csv")
+X = pd.read_csv("../data/train.csv")
 
 # Most basic statistics
 stats_table = X.describe # ~38% survived
