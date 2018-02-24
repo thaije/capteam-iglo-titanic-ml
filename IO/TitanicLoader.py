@@ -1,13 +1,27 @@
 import numpy as np
-from IO import Loader
+from IO.Loader import Loader
 import pandas as pd
 
+
+# Loader specific for the Titanic task
+# The loader loads the data
 class TitanicLoader(Loader):
-    def preprocess_data(self, data):
-        pass
+
+    def load_split(self, training_data_file, test_data_file):
+        train, test = self.load_data(training_data_file, test_data_file)
+        test_labels = test['PassengerId']
+        X_train, Y_train =  self.split_data(train)
+
+        print( "\n" + ('-' * 40) )
+        print( " Original data")
+        print( '-' * 40)
+        print( X_train.head() )
+
+        return X_train, Y_train, test, test_labels
 
     def split_data(self, train):
-        # Get the true class labels from the training set
-        x_train = train.drop(['Survived'], axis=1)
-        y_train = np.array(train['Survived'])
-        return pd.DataFrame.as_matrix(x_train), y_train
+        # split the features and predector feature
+        train_X = train
+        train_Y = train_X["Survived"]
+        del train_X["Survived"]
+        return train_X, train_Y

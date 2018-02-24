@@ -7,12 +7,12 @@ from sklearn.neural_network import MLPClassifier
 import CrossValidate as CV
 
 if __name__ == '__main__':
-    train = pd.read_csv('Data\\train.csv')
-    test = pd.read_csv('Data\\test.csv')
+    train = pd.read_csv('Data/train.csv')
+    test = pd.read_csv('Data/test.csv')
 
     # Get the true class labels from the training set.
     y_train = np.array(train['Survived'])
-    
+
     # Remove columns 'PassengerId' and 'Survived' from the data sets.
     X_train = train.drop(['PassengerId', 'Survived'], axis=1)
     X_test = test.drop(['PassengerId'], axis=1)
@@ -33,7 +33,7 @@ if __name__ == '__main__':
     for feature in features:
         feature_values = list(set().union(X_train[feature].unique(), X_test[feature].unique()))
         le = preprocessing.LabelEncoder()
-        le.fit(feature_values)  
+        le.fit(feature_values)
         X_train[feature] = le.transform(X_train[feature])
         X_test[feature] = le.transform(X_test[feature])
 
@@ -52,7 +52,7 @@ if __name__ == '__main__':
     #clf = CV.RepeatedKFold(X_train, y_train, clf, 10, 10)
     #clf = CV.LeaveOneOut(X_train, y_train, clf)
     #clf = CV.StratifiedKFold(X_train, y_train, clf, 10)
-    
+
     # Prediction
     y_pred = clf.predict(X_test)
 
@@ -65,4 +65,3 @@ if __name__ == '__main__':
     df = pd.DataFrame(predictions)
     df.columns = ['PassengerId', 'Survived']
     df.to_csv('submission.csv', index=False)
-    

@@ -1,6 +1,8 @@
 import pandas as pd
-from IO import Saver
+from IO.Saver import Saver
 
+# Saver specific for the Titanic task
+# The Saver saves the predictions to an submission file
 class TitanicSaver(Saver):
     def save_predictions(self, predictions, file_name):
         df = pd.DataFrame(predictions)
