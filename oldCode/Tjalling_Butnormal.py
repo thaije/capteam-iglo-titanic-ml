@@ -8,8 +8,9 @@ import numpy as np
 import random as rnd
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
-
-
+import feature_selection as fs
+from sklearn.feature_selection import chi2
+from sklearn.feature_selection import mutual_info_classif
 # visualization
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -29,8 +30,8 @@ from sklearn.tree import DecisionTreeClassifier
 # For example, running this (by clicking run or pressing Shift+Enter) will list the files in the input directory
 
 # read in data from csv files
-train_df = pd.read_csv('data/train.csv')
-test_df = pd.read_csv('data/test.csv')
+train_df = pd.read_csv('train.csv')
+test_df = pd.read_csv('test.csv')
 combine = [train_df, test_df]
 
 # preview the data
@@ -135,6 +136,16 @@ numeric_variables = list(train_X.dtypes[train_X.dtypes != 'object'].index)
 print("Using variables:", numeric_variables)
 
 print("Running..")
+
+param_grid = [
+  {'C': [1, 10, 100, 1000], 'kernel': ['linear']},
+  {'C': [1, 10, 100, 1000], 'gamma': [0.001, 0.0001], 'kernel': ['rbf']},
+ ]
+
+clf = GridSearchCV(SVC(), param_grid, cv=5,
+                   scoring='accuracy')
+clf.fit(X_train, y_train)
+
 for run in range(runs):
     # generate a random train / test split
     cv_X_train, cv_X_test, cv_Y_train, cv_Y_test = train_test_split(train_X, train_Y, test_size=0.3)
@@ -151,5 +162,10 @@ for run in range(runs):
     # calc mean accuracy over predicted test set
     accus[run] = model.score(cv_X_test[numeric_variables], cv_Y_test)
     # accus[run] = accuracy_score(cv_Y_test, model.predict(cv_X_test[numeric_variables]))
+    if run == 0:
+        fs.analyze_feature_importance(model, numeric_variables)
+        chi = fs.obtain_feature_scores(chi2, cv_X_test[numeric_variables], cv_Y_test, numeric_variables)
 
 print("Mean test accuracy:", str(np.mean(accus)), "| Std:", str(np.std(accus)) + ". in", str(runs), "runs.")
+
+

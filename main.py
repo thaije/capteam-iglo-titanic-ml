@@ -4,6 +4,7 @@ from IO.TitanicLoader import TitanicLoader
 from Preprocessing.TitanicPreprocessor import TitanicPreprocessor
 from FeatureEngineering.TitanicFeatures import TitanicFeatures
 from Models.RandomForestModel import RandomForestModel
+from Models.SVMModel import SVMModel
 from IO.TitanicSaver import TitanicSaver
 
 class Pipeline(object):
@@ -19,7 +20,7 @@ class Pipeline(object):
         self.loader = TitanicLoader()
         self.preprocessor = TitanicPreprocessor()
         self.features = TitanicFeatures()
-        self.models = [RandomForestModel(self.params)]
+        self.models = [SVMModel(self.params)]
         self.saver = TitanicSaver()
 
     def run(self):

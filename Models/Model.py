@@ -8,7 +8,7 @@ class Model(object):
         self.featureList = []
         self.acc = -1
 
-    def feature_selection(self, data):
+    def feature_selection(self, x_train, y_train):
         pass
 
     # Training data should probably be a split of features and labels [X, Y]
