@@ -1,20 +1,9 @@
 from IO.Loader import Loader
 from Models.Model import Model
-import numpy as np
-import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import GridSearchCV
 import Validation.CrossValidate as CV
-
-from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.model_selection import train_test_split
-from sklearn import preprocessing, svm
-from sklearn.neural_network import MLPClassifier
-
-# TODO: test other methods
-# clf = AdaBoostClassifier()
-# clf = svm.SVC()
-# clf = MLPClassifier(solver='lbfgs', alpha=0.0001, hidden_layer_sizes=(100,2))
-
+import numpy as np
 
 # This model contains the code for a RandomForest model for the Titanic task, including
 # feature selection, training and testing methods.
@@ -30,23 +19,29 @@ class RandomForestModel(Model):
         # we only want numerical variables
         self.featureList = list(x_train.dtypes[x_train.dtypes != 'object'].index)
 
-        # TODO: do actual feature selection with sklearn or something
-        self.featureList.remove('Age*Class')
-        self.featureList.remove('SibSp')
-        self.featureList.remove('Parch')
-        self.featureList.remove('PassengerId')
-        self.featureList.remove('Title_alt')
-        self.featureList.remove('IsAlone')
-        self.featureList.remove('Age')
-        self.featureList.remove('Fare')
-        self.featureList.remove('FamilySize')
-
-
+#        # TODO: do actual feature selection with sklearn or something
+#        self.featureList.remove('Age*Class')
+#        self.featureList.remove('SibSp')
+#        self.featureList.remove('Parch')
+#        self.featureList.remove('PassengerId')
+#        self.featureList.remove('Title_alt')
+#        self.featureList.remove('IsAlone')
+#        self.featureList.remove('Age')
+#        self.featureList.remove('Fare')
+#        self.featureList.remove('FamilySize')
+                
         print( "Feature list after feature selection:" )
         print(self.featureList)
+        
+        # TODO: remove this later
+        # Check feature importances for basic classifier
+        import feature_selection as fs
+        clf = RandomForestClassifier()
+        clf.fit(x_train[self.featureList], y_train)
+        fs.analyze_feature_importance(clf, self.featureList)
 
         return self.featureList
-
+    
 
     # train the model with the features determined in feature_selection()
     def train(self, train_X, train_Y, model_args):
@@ -59,16 +54,27 @@ class RandomForestModel(Model):
         train_Y = np.array(train_Y)
 
         print("Training model..")
-        clf = RandomForestClassifier(n_estimators=250)
+        
+        # Hyper-parameter tuning
+        clf_raw = RandomForestClassifier()
+        param_grid = {'max_features': [1, int(np.sqrt(len(self.featureList))), len(self.featureList)],
+                      'max_depth': [3, None],
+                      'min_samples_split' :[2, 3, 10],
+                      'min_samples_leaf' : [1, 3, 10],                  
+                      'criterion':['gini', 'entropy'],
+                      'bootstrap':[True, False]} 
+                        #'n_estimators': np.arange(),
+                        #'max_leaf_nodes': [],
+        
+        self.clf = GridSearchCV(clf_raw, param_grid=param_grid, cv=10)
+        self.clf.fit(train_X, train_Y)
+        
+        print("Best parameters:")
+        print(self.clf.best_params_)
 
-        # Cross Validation
-        self.clf, self.acc, scores = CV.KFold(train_X, train_Y, clf, 4)
-        # self.clf, optimalScore, scores = CV.RepeatedKFold(X_train, y_train, clf, 10, 10)
-        # self.clf, optimalScore, scores = CV.LeaveOneOut(X_train, y_train, clf)
-        # self.clf, optimalScore, scores = CV.StratifiedKFold(X_train, y_train, clf, 10)
-
-        print("Best accuracy:", self.acc , ". Mean:", str(np.mean(scores)), "| Std:", str(np.std(scores)))
-        pass
+        # Cross-Validation
+        cv_scores = CV.KFold(train_X, train_Y, clf_raw)
+        print("Best accuracy:", str(np.max(cv_scores)) , ". Mean:", str(np.mean(cv_scores)), "| Std:", str(np.std(cv_scores)))
 
 
     # predict the test set
@@ -82,7 +88,6 @@ class RandomForestModel(Model):
         y_pred = self.clf.predict(X_test)
 
         # Write predictions to csv file
-        id_offset = self.train_set_size
         self.predictions = []
         for i, prediction in enumerate(y_pred):
             self.predictions.append([labels[i], prediction])
