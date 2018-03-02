@@ -1,7 +1,6 @@
 import pandas as pd
-import numpy as np
 import re
-from FeatureEngineering.Features import Features
+from featureEngineering.Features import Features
 
 
 # Does specific feature engineering for the Titanic task. All features are just added to the existing features

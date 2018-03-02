@@ -1,12 +1,8 @@
-from Models.Model import Model
+from models.Model import Model
 import numpy as np
-import pandas as pd
-import Validation.CrossValidate as CV
 
-from sklearn.model_selection import train_test_split
 from sklearn.model_selection import GridSearchCV
 from sklearn import svm
-from sklearn.neural_network import MLPClassifier
 
 class SVMModel(Model):
 
@@ -40,7 +36,7 @@ class SVMModel(Model):
         clf_raw = svm.SVC()
         self.clf = GridSearchCV(clf_raw, param_grid, cv=4, scoring='accuracy')
         self.clf.fit(train_X, train_Y)
-        print self.clf.best_params_
+        print (self.clf.best_params_)
         self.acc = self.clf.best_score_
 
         means = self.clf.cv_results_['mean_test_score']

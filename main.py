@@ -1,11 +1,11 @@
 import argparse
 
-from IO.TitanicLoader import TitanicLoader
-from Preprocessing.TitanicPreprocessor import TitanicPreprocessor
-from FeatureEngineering.TitanicFeatures import TitanicFeatures
-from Models.RandomForestModel import RandomForestModel
-from Models.SVMModel import SVMModel
-from IO.TitanicSaver import TitanicSaver
+from input_output.TitanicLoader import TitanicLoader
+from preprocessing.TitanicPreprocessor import TitanicPreprocessor
+from featureEngineering.TitanicFeatures import TitanicFeatures
+from models.RandomForestModel import RandomForestModel
+from models.SVMModel import SVMModel
+from input_output.TitanicSaver import TitanicSaver
 
 class Pipeline(object):
     def __init__(self):

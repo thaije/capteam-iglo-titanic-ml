@@ -1,5 +1,3 @@
-from IO.Loader import Loader
-
 # Base object, which can be used as a model for any task
 # The model contains the feature selection for this model, the training and test methods
 class Model(object):

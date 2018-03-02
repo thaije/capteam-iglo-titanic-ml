@@ -2,9 +2,6 @@ import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn import preprocessing, svm
-from sklearn.neural_network import MLPClassifier
-
-import CrossValidate as CV
 
 if __name__ == '__main__':
     train = pd.read_csv('Data/train.csv')
