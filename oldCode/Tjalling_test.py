@@ -21,7 +21,32 @@ from sklearn.linear_model import SGDClassifier
 from sklearn.tree import DecisionTreeClassifier
 
 
+# setup 1
+# randomForestParams = {'bootstrap': False, 'criterion': 'entropy', 'max_depth': None, 'max_features': 3, 'min_samples_leaf': 3, 'min_samples_split': 3}
+# remove PassengerId, SibSp, Parch
+# pipeline score = 84.7
+# this script score = 83.65
 
+randomForestParams = {'bootstrap': True, 'criterion': 'gini', 'max_depth': None, 'max_features': 4, 'min_samples_leaf': 3, 'min_samples_split': 3}
+# or {'bootstrap': True, 'criterion': 'gini', 'max_depth': None, 'max_features': 3, 'min_samples_leaf': 3, 'min_samples_split': 3}
+# remove PassengerId, SibSp, Parch
+# score = 84.1 / 84.4
+# this script 83
+
+# randomForestParams = {'bootstrap': True, 'criterion': 'entropy', 'max_depth': None, 'max_features': 3, 'min_samples_leaf': 3, 'min_samples_split': 10}
+# remove PassengerId, SibSp, Parch
+# score = 83.8
+# this script score: 83.7
+
+# randomForestParams = {'bootstrap': True, 'criterion': 'gini', 'max_depth': None, 'max_features': 4, 'min_samples_leaf': 3, 'min_samples_split': 3}
+# remove None
+# score = 83.8
+# this script score 83.8
+
+# randomForestParams = {'bootstrap': False, 'criterion': 'entropy', 'max_depth': None, 'max_features': 1, 'min_samples_leaf': 3, 'min_samples_split': 2}
+# remove PassengerId, SibSp, Parch
+# score = 84.0
+# this script score 83.1
 
 def preprocess(data):
     print ("Preprocessing data..")
@@ -184,6 +209,24 @@ def engineer_features(data):
 
     return data
 
+
+def gridSearchRandomForest():
+    clf_raw = RandomForestClassifier()
+    param_grid = {'max_features': [1, int(np.sqrt(len(self.featureList))), len(self.featureList)],
+                    'max_depth': [3, None],
+                    'min_samples_split' :[2, 3, 10],
+                    'min_samples_leaf' : [1, 3, 10],
+                    'criterion':['gini', 'entropy'],
+                    'bootstrap':[True, False]}
+
+    clf = GridSearchCV(clf_raw, param_grid=param_grid, cv=10)
+    clf.fit(train_X, train_Y)
+
+    print("Best parameters:")
+    print(clf.best_params_)
+    print("Best average accuracy of K-folds of best model:", clf.best_score_)
+
+
 def evaluate(train_X, train_Y, test):
     # Evaluation
     runs = 100  # Do it over multiple runs to get estimate of "true" accuracy distribution
@@ -204,7 +247,7 @@ def evaluate(train_X, train_Y, test):
         # accus[run] = model.score(cv_X_test, cv_Y_test)
 
         # random forest -> 83.5 acc
-        model = RandomForestClassifier(bootstrap=True, min_samples_leaf=3, min_samples_split=10,criterion='gini', max_features=4,max_depth=None, n_estimators=250)
+        model = RandomForestClassifier(bootstrap=randomForestParams['bootstrap'], min_samples_leaf=randomForestParams['min_samples_leaf'], min_samples_split=randomForestParams['min_samples_leaf'], criterion=randomForestParams['criterion'], max_features=randomForestParams['max_features'], max_depth=randomForestParams['max_depth'], n_estimators=250)
         model.fit(cv_X_train, cv_Y_train)
         # calc mean accuracy over predicted test set
         accus[run] = model.score(cv_X_test, cv_Y_test)
@@ -215,7 +258,7 @@ def evaluate(train_X, train_Y, test):
 
 def train(train_X, train_Y):
     print("Training model on all data..")
-    model = RandomForestClassifier(bootstrap=True, min_samples_leaf=3, min_samples_split=10,criterion='gini', max_features=4,max_depth=None, n_estimators=250)
+    model = RandomForestClassifier(bootstrap=randomForestParams['bootstrap'], min_samples_leaf=randomForestParams['min_samples_leaf'], min_samples_split=randomForestParams['min_samples_leaf'], criterion=randomForestParams['criterion'], max_features=randomForestParams['max_features'], max_depth=randomForestParams['max_depth'], n_estimators=250)
     model.fit(train_X, train_Y)
     return model
 

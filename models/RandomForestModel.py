@@ -2,6 +2,7 @@ from models.Model import Model
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV
 import numpy as np
+import validation.CrossValidate as CV
 
 # This model contains the code for a RandomForest model for the Titanic task, including
 # feature selection, training and testing methods.
@@ -66,6 +67,7 @@ class RandomForestModel(Model):
                         #'n_estimators': np.arange(),
                         #'max_leaf_nodes': [],
 
+        # find best parameters
         self.clf = GridSearchCV(clf_raw, param_grid=param_grid, cv=10)
         self.clf.fit(train_X, train_Y)
 
@@ -74,12 +76,12 @@ class RandomForestModel(Model):
 
         # print best performance of best model of gridsearch with cv
         self.acc = self.clf.best_score_
-        means = self.clf.cv_results_['mean_test_score']
-        stds = self.clf.cv_results_['std_test_score']
-        print("Best accuracy:", self.acc , ". Mean:", str(np.mean(means)), "| Std:", str(np.std(stds)))
+        print("Model with best parameters, average accuracy over K-folds:", self.acc)
 
-        # Cross-Validation to get performance estimate
-        # NOTE: this gives a performance indication of clf_raw, not clf with the optimal parameters from the gridsearch
+
+        # # Cross-Validation to get performance estimate
+        # # NOTE: this gives a performance indication of clf_raw, not clf with the optimal parameters from the gridsearch
+        # clf_raw = RandomForestClassifier(bootstrap=True, min_samples_leaf=3, min_samples_split=10, criterion='gini', max_features=4,max_depth=None, n_estimators=250)
         # cv_scores = CV.KFold(train_X, train_Y, clf_raw)
         # print("Best accuracy:", str(np.max(cv_scores)) , ". Mean:", str(np.mean(cv_scores)), "| Std:", str(np.std(cv_scores)))
 
