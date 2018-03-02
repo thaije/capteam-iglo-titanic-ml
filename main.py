@@ -20,7 +20,7 @@ class Pipeline(object):
         self.loader = TitanicLoader()
         self.preprocessor = TitanicPreprocessor()
         self.features = TitanicFeatures()
-        self.models = [SVMModel(self.params)]
+        self.models = [RandomForestModel(self.params)]
         self.saver = TitanicSaver()
 
     def run(self):

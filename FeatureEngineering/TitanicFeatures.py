@@ -7,9 +7,9 @@ from FeatureEngineering.Features import Features
 # Does specific feature engineering for the Titanic task. All features are just added to the existing features
 class TitanicFeatures(Features):
 
-    def engineer_features(self, data):
+    def engineer_features(self, data, verbose=False):
 
-        print ("Engineering features")
+        print ("Engineering features..")
 
         # Put features in bins with a numerical ID, to make it easier to train on
         data = binAge(data)
@@ -26,10 +26,11 @@ class TitanicFeatures(Features):
         data = createTitle(data)
         data = createTitleAlt(data)
 
-        print( "\n" + ('-' * 40) )
-        print( " Data after feature engineering")
-        print( '-' * 40)
-        print( data.head() )
+        if verbose:
+            print( "\n" + ('-' * 40) )
+            print( " Data after feature engineering")
+            print( '-' * 40)
+            print( data.head() )
 
         return data
 

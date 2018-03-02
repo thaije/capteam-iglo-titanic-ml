@@ -4,7 +4,7 @@ import numpy as np
 # Base object, which can be used as a Loader for any task
 # The loader loads the data
 class Loader(object):
-    def load_split(self, training_data_file, test_data_file):
+    def load_split(self, training_data_file, test_data_file, verbose=False):
         pass
 
     def load_data(self, training_data_file, test_data_file = None):

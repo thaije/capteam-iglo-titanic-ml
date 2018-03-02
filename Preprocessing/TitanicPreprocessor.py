@@ -7,7 +7,9 @@ from Preprocessing.Preprocesser import Preprocesser
 class TitanicPreprocessor(Preprocesser):
 
     # default processing for the Titanic task
-    def preprocess_data(self, data):
+    def preprocess_data(self, data, verbose=False):
+
+        print ("Preprocessing data..")
 
         # replace Sex labels with numerical ID
         # ['female','male'] => [0,1]
@@ -27,9 +29,10 @@ class TitanicPreprocessor(Preprocesser):
         # ['S','C','Q'] => [1,2,3]
         data["Embarked"].replace(['S','C','Q'], [1,2,3], inplace=True)
 
-        print( "\n" + ('-' * 40) )
-        print( " Data After Preprocessing")
-        print( '-' * 40)
-        print( data.head() )
+        if verbose:
+            print( "\n" + ('-' * 40) )
+            print( " Data After Preprocessing")
+            print( '-' * 40)
+            print( data.head() )
 
         return data

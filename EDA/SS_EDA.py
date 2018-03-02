@@ -33,7 +33,7 @@ def multipage(filename, figs=None, dpi=200):
 # Plot palette for all plots
 pal = 'Paired'
 
-X = pd.read_csv("train.csv")
+X = pd.read_csv("../Data/train.csv")
 
 # Most basic statistics
 stats_table = X.describe # ~38% survived
@@ -106,8 +106,8 @@ SS_plot(feature='FamilySize', X=X)
 SS_plot(feature="Embarked",X=X)
 
 # Overall pairplots for epifany
-drops =["PassengerId", "Name", "SibSp", "Parch", "Cabin"]
-sns.pairplot(X.drop(drops, axis=1), hue="Survived", size=3, diag_kind="kde")
+# drops =["PassengerId", "Name", "SibSp", "Parch", "Cabin"]
+# sns.pairplot(X.drop(drops, axis=1), hue="Survived", size=3, diag_kind="kde")
 
 
 

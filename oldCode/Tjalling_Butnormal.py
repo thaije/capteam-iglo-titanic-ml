@@ -167,5 +167,3 @@ for run in range(runs):
         chi = fs.obtain_feature_scores(chi2, cv_X_test[numeric_variables], cv_Y_test, numeric_variables)
 
 print("Mean test accuracy:", str(np.mean(accus)), "| Std:", str(np.std(accus)) + ". in", str(runs), "runs.")
-
-

@@ -8,3 +8,5 @@ class TitanicSaver(Saver):
         df = pd.DataFrame(predictions)
         df.columns = ['PassengerId', 'Survived']
         df.to_csv(file_name, index=False)
+
+        print ("Predictions written to " , file_name)

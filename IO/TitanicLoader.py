@@ -7,15 +7,20 @@ import pandas as pd
 # The loader loads the data
 class TitanicLoader(Loader):
 
-    def load_split(self, training_data_file, test_data_file):
+    def load_split(self, training_data_file, test_data_file, verbose=False):
+
+
         train, test = self.load_data(training_data_file, test_data_file)
         test_labels = test['PassengerId']
         X_train, Y_train =  self.split_data(train)
 
-        print( "\n" + ('-' * 40) )
-        print( " Original data")
-        print( '-' * 40)
-        print( X_train.head() )
+        if verbose:
+            print( "\n" + ('-' * 40) )
+            print( " Original data")
+            print( '-' * 40)
+            print( X_train.head() )
+
+        print ("Loaded dataset")
 
         return X_train, Y_train, test, test_labels
 

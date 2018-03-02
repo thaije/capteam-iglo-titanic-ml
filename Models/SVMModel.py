@@ -1,4 +1,3 @@
-from IO.Loader import Loader
 from Models.Model import Model
 import numpy as np
 import pandas as pd
@@ -39,13 +38,14 @@ class SVMModel(Model):
         ]
 
         clf_raw = svm.SVC()
-        self.clf = GridSearchCV(clf_raw,param_grid,cv=4,scoring='accuracy')
-        self.clf.fit(train_X,train_Y)
+        self.clf = GridSearchCV(clf_raw, param_grid, cv=4, scoring='accuracy')
+        self.clf.fit(train_X, train_Y)
         print self.clf.best_params_
         self.acc = self.clf.best_score_
 
         means = self.clf.cv_results_['mean_test_score']
         stds = self.clf.cv_results_['std_test_score']
+
         # Cross Validation
       #  self.clf, self.acc, scores = CV.KFold(train_X, train_Y, clf, 4)
         # self.clf, optimalScore, scores = CV.RepeatedKFold(X_train, y_train, clf, 10, 10)
