@@ -38,7 +38,7 @@ class SVMModel(Model):
         ]
 
         clf_raw = svm.SVC()
-        self.clf = GridSearchCV(clf_raw, param_grid, cv=4, scoring='accuracy')
+        self.clf = GridSearchCV(clf_raw, param_grid, cv=10, scoring='accuracy')
         self.clf.fit(train_X, train_Y)
         print self.clf.best_params_
         self.acc = self.clf.best_score_
