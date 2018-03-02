@@ -1,7 +1,4 @@
-import numpy as np
-from IO.Loader import Loader
-import pandas as pd
-
+from input_output.Loader import Loader
 
 # Loader specific for the Titanic task
 # The loader loads the data

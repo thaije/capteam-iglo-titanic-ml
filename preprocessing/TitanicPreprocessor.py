@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from Preprocessing.Preprocesser import Preprocesser
+from preprocessing.Preprocesser import Preprocesser
 
 
 # Default processor for the titanic task, fills empty fields etc.
@@ -31,7 +31,7 @@ class TitanicPreprocessor(Preprocesser):
 
         if verbose:
             print( "\n" + ('-' * 40) )
-            print( " Data After Preprocessing")
+            print( " Data After preprocessing")
             print( '-' * 40)
             print( data.head() )
 

@@ -1,6 +1,3 @@
-import pandas as pd
-import numpy as np
-
 # Base object, which can be used as a Loader for any task
 # The Features object does the feature engineering
 class Features(object):

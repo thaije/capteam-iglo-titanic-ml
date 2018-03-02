@@ -1,5 +1,5 @@
 import pandas as pd
-from IO.Saver import Saver
+from input_output.Saver import Saver
 
 # Saver specific for the Titanic task
 # The Saver saves the predictions to an submission file
