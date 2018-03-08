@@ -10,6 +10,8 @@ class SVMModel(Model):
         self.params = params
         self.featureList = []
         self.acc = -1
+        # used for the name of the prediction file
+        self.name = "SVMModel"
 
     def feature_selection(self, x_train, y_train):
         # we only want numerical variables
@@ -39,17 +41,13 @@ class SVMModel(Model):
         print (self.clf.best_params_)
         self.acc = self.clf.best_score_
 
-        means = self.clf.cv_results_['mean_test_score']
-        stds = self.clf.cv_results_['std_test_score']
-
         # Cross Validation
       #  self.clf, self.acc, scores = CV.KFold(train_X, train_Y, clf, 4)
         # self.clf, optimalScore, scores = CV.RepeatedKFold(X_train, y_train, clf, 10, 10)
         # self.clf, optimalScore, scores = CV.LeaveOneOut(X_train, y_train, clf)
         # self.clf, optimalScore, scores = CV.StratifiedKFold(X_train, y_train, clf, 10)
 
-        print("Best accuracy:", self.acc , ". Mean:", str(np.mean(means)), "| Std:", str(np.std(stds)))
-        pass
+        print("Model with best parameters, average accuracy over K-folds:", self.acc)
 
 
     # predict the test set
@@ -67,4 +65,3 @@ class SVMModel(Model):
         self.predictions = []
         for i, prediction in enumerate(y_pred):
             self.predictions.append([labels[i], prediction])
-        pass

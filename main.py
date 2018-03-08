@@ -20,7 +20,7 @@ class Pipeline(object):
         self.loader = TitanicLoader()
         self.preprocessor = TitanicPreprocessor()
         self.features = TitanicFeatures()
-        self.models = [RandomForestModel(self.params)]
+        self.models = [RandomForestModel(self.params), SVMModel(self.params)]
         self.saver = TitanicSaver()
 
     def run(self):
@@ -34,21 +34,16 @@ class Pipeline(object):
 
         # train all the models
         for model in self.models:
+            print ("\nUsing " , model.name)
 
             # Check which features are optimal for this model, and train the model with them
             model.feature_selection(x_train, y_train)
             model.train(x_train, y_train, self.model_params)
 
-            # TODO: save cv validation performance or something
-            # model.acc = ..
-
-
-        # TODO: do ensemble learning with the models / select best model?
-        bestModel = self.models[0]
-
-        # Generate predictions with the best model / ensemble model
-        bestModel.test(x_test, test_labels)
-        self.saver.save_predictions(bestModel.predictions, 'submission.csv')
+            # Generate predictions for the test set and write to a csv file
+            print ("Predicting test set..")
+            model.test(x_test, test_labels)
+            self.saver.save_predictions(model.predictions, 'predictions/' + model.name + 'predictions.csv')
 
 
 

@@ -10,6 +10,8 @@ class RandomForestModel(Model):
     def __init__(self, params):
         self.params = params
         self.train_set_size = -1
+        # used for the name of the prediction file
+        self.name = "RandomForestModel"
 
     def feature_selection(self, x_train, y_train):
         # get all names of the features
@@ -18,28 +20,15 @@ class RandomForestModel(Model):
         # we only want numerical variables
         self.featureList = list(x_train.dtypes[x_train.dtypes != 'object'].index)
 
-
         # TODO: remove this later
         # Check feature importances for basic classifier
-        import feature_selection as fs
-        clf = RandomForestClassifier()
-        clf.fit(x_train[self.featureList], y_train)
-        fs.analyze_feature_importance(clf, self.featureList)
+        # import feature_selection as fs
+        # clf = RandomForestClassifier()
+        # clf.fit(x_train[self.featureList], y_train)
+        # fs.analyze_feature_importance(clf, self.featureList)
 
-        # Is this feature predictive or does it lead to overfitting?
-        # self.featureList.remove('PassengerId')
-
-        # # remove last 6 features
-        # self.featureList.remove('IsAlone')
-        # self.featureList.remove('Parch')
-        # self.featureList.remove('SibSp')
-        # self.featureList.remove('FamilySize_cat')
-        # self.featureList.remove('Fare_cat')
-        # self.featureList.remove('Age_cat')
-
-        print( "Feature list after feature selection:" )
-        print(self.featureList)
-
+        # print( "Feature list after feature selection:" )
+        # print(self.featureList)
 
         return self.featureList
 
