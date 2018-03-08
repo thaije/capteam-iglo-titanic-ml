@@ -9,7 +9,7 @@ class TitanicPreprocessor(Preprocesser):
     # default processing for the Titanic task
     def preprocess_data(self, data, verbose=False):
 
-        print ("Preprocessing data..")
+        print ("preprocessing data..")
 
         # replace Sex labels with numerical ID
         # ['female','male'] => [0,1]
@@ -24,6 +24,9 @@ class TitanicPreprocessor(Preprocesser):
         # Fill in missing embarked attributes with most frequent port
         freq_port = data.Embarked.dropna().mode()[0]
         data['Embarked'] = data['Embarked'].fillna(freq_port)
+
+        # remove the passenger id as it couldn't possibly be predictive
+        del data['PassengerId']
 
         # replace port numbers with numerical ID
         # ['S','C','Q'] => [1,2,3]
