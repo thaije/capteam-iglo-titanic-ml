@@ -25,6 +25,10 @@ class TitanicFeatures(Features):
         data = createTitle(data)
         data = createTitleAlt(data)
 
+        data = extractCabinFeatures(data)
+
+        data = extractNameFeatures(data)
+
         if verbose:
             print( "\n" + ('-' * 40) )
             print( " Data after feature engineering")
@@ -96,6 +100,61 @@ def createIsAlone(data):
 
     return data
 
+def extractCabinFeatures(data):
+    # absence of cabin data might be associated with lower status
+    data['hasCabinData'] = data["Cabin"].isnull().apply(lambda x: not x)
+
+    # get the deck information
+    #  data['Deck'] = data['Cabin'].str.slice(0,1)
+    # replace N/A
+    #  data['Deck'] = data['Deck'].fillna("N")
+
+    # get the room information
+    #  data['Room'] = \
+    #  data['Cabin'].str.slice(1, 5).str.extract("([0-9]+)", expand=False).astype("float")
+    # replace N/A
+    #  data['Room'] = data['Room'].fillna(data["Room"].mean())
+
+    # get a one-hot encoding of deck numbers
+    #  data = one_hot(data, ['Deck'], drop_col=True)
+
+    return data
+
+# helper functions, move!
+
+def one_hot_column(df, label, drop_col=False):
+    '''
+    This function will one hot encode the chosen column.
+    Args:
+        df: Pandas dataframe
+        label: Label of the column to encode
+        drop_col: boolean to decide if the chosen column should be dropped
+    Returns:
+        pandas dataframe with the given encoding
+    '''
+    one_hot = pd.get_dummies(df[label], prefix=label)
+    if drop_col:
+        df = df.drop(label, axis=1)
+    df = df.join(one_hot)
+    return df
+
+
+def one_hot(df, labels, drop_col=False):
+    '''
+    This function will one hot encode a list of columns.
+    Args:
+        df: Pandas dataframe
+        labels: list of the columns to encode
+        drop_col: boolean to decide if the chosen column should be dropped
+    Returns:
+        pandas dataframe with the given encoding
+    '''
+    for label in labels:
+        df = one_hot_column(df, label, drop_col)
+    return df
+
+
+
 
 # create a new feature which classifies people based on their title,
 # with categories "Mr": 1, "Miss": 2, "Mrs": 3, "Master": 4, "Rare": 5
@@ -148,5 +207,11 @@ def createTitleAlt(data):
     title_mapping = {"Officer": 1, "Royalty": 2, "Mrs": 3, "Miss": 4, "Mr": 5, "Master": 6}
     data['Title_alt'] = data['Title_alt'].map(title_mapping)
     data['Title_alt'] = data['Title_alt'].fillna(0)
+
+    return data
+
+def extractNameFeatures(data):
+    # longer names might be associated with higher socio-economic status
+    data['nameLength'] = data['Name'].apply(lambda x : len(x))
 
     return data
