@@ -1,24 +1,24 @@
 from models.Model import Model
-import numpy as np
-
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import GridSearchCV
-from sklearn import svm
+import numpy as np
+import validation.CrossValidate as CV
 
-class SVMModel(Model):
-
+# This model contains the code for a k-nearest neihgbours model for the Titanic task, including
+# training and testing methods.
+class KNNModel(Model):
     def __init__(self, params):
         self.params = params
-        self.featureList = []
-        self.acc = -1
+        self.train_set_size = -1
         # used for the name of the prediction file
-        self.name = "SVMModel"
+        self.name = "K-NearestNeighboursModel"
 
     def feature_selection(self, x_train, y_train):
         # we only want numerical variables
-
         self.featureList = list(x_train.dtypes[x_train.dtypes != 'object'].index)
 
         return self.featureList
+
 
     # train the model with the features determined in feature_selection()
     def train(self, train_X, train_Y, model_args):
@@ -31,23 +31,22 @@ class SVMModel(Model):
         train_Y = np.array(train_Y)
 
         print("Training model..")
-        param_grid = [
-            {'C': [0.01, 0.1,1], 'kernel': ['linear']}
-        ]
 
-        # probability=True is needed for it to work with the ensemble learning
-        clf_raw = svm.SVC(probability=True)
-        self.clf = GridSearchCV(clf_raw, param_grid, cv=10)
+        # Hyper-parameter tuning
+        clf_raw = KNeighborsClassifier()
+        param_grid = {'n_neighbors': [1,2,3],
+                      'weights': ['distance', 'uniform'],
+                      'algorithm': ['ball_tree', 'kd_tree', 'brute']}
+
+        # find best parameters
+        self.clf = GridSearchCV(clf_raw, param_grid=param_grid, cv=10)
         self.clf.fit(train_X, train_Y)
-        print (self.clf.best_params_)
+
+        print("Best parameters:")
+        print(self.clf.best_params_)
+
+        # print best performance of best model of gridsearch with cv
         self.acc = self.clf.best_score_
-
-        # Cross Validation
-      #  self.clf, self.acc, scores = CV.KFold(train_X, train_Y, clf, 4)
-        # self.clf, optimalScore, scores = CV.RepeatedKFold(X_train, y_train, clf, 10, 10)
-        # self.clf, optimalScore, scores = CV.LeaveOneOut(X_train, y_train, clf)
-        # self.clf, optimalScore, scores = CV.StratifiedKFold(X_train, y_train, clf, 10)
-
         print("Model with best parameters, average accuracy over K-folds:", self.acc)
 
 
@@ -62,7 +61,7 @@ class SVMModel(Model):
         y_pred = self.clf.predict(X_test)
 
         # Write predictions to csv file
-        id_offset = self.train_set_size
         self.predictions = []
         for i, prediction in enumerate(y_pred):
             self.predictions.append([labels[i], prediction])
+        pass

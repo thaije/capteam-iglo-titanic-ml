@@ -5,7 +5,7 @@ class Model(object):
         self.params = params
         self.featureList = []
         self.acc = -1
-        # NOTE: change this to the name of your model, it is used for the name of the prediction output file 
+        # NOTE: change this to the name of your model, it is used for the name of the prediction output file
         self.name = "baseModel"
 
     def feature_selection(self, x_train, y_train):

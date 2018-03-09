@@ -1,11 +1,14 @@
 import argparse
-
+# import auxiliary.modelPlots as plottery
 from input_output.TitanicLoader import TitanicLoader
 from preprocessing.TitanicPreprocessor import TitanicPreprocessor
 from featureEngineering.TitanicFeatures import TitanicFeatures
 from models.RandomForestModel import RandomForestModel
 from models.SVMModel import SVMModel
+from models.KNNModel import KNNModel
+from ensembles.votingEnsemble import VotingEnsemble
 from input_output.TitanicSaver import TitanicSaver
+
 
 class Pipeline(object):
     def __init__(self):
@@ -20,7 +23,7 @@ class Pipeline(object):
         self.loader = TitanicLoader()
         self.preprocessor = TitanicPreprocessor()
         self.features = TitanicFeatures()
-        self.models = [RandomForestModel(self.params), SVMModel(self.params)]
+        self.models = [RandomForestModel(self.params), SVMModel(self.params) , KNNModel(self.params)]
         self.saver = TitanicSaver()
 
     def run(self):
@@ -43,8 +46,16 @@ class Pipeline(object):
             # Generate predictions for the test set and write to a csv file
             print ("Predicting test set..")
             model.test(x_test, test_labels)
-            self.saver.save_predictions(model.predictions, 'predictions/' + model.name + 'predictions.csv')
+            self.saver.save_predictions(model.predictions, 'predictions/' + model.name + '.csv')
 
+
+        # Create ensemble from all the trained models, and test the predictions output
+        # NOTE: assumes you trained your model with Gridsearch
+        ve = VotingEnsemble(params=[], models=self.models)
+        ve.feature_selection(x_train, y_train)
+        ve.train(x_train, y_train)
+        ve.test(x_test, test_labels)
+        self.saver.save_predictions(ve.predictions, 'predictions/' + ve.name + '.csv')
 
 
 if __name__ == '__main__':
