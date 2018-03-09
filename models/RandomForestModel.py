@@ -57,7 +57,7 @@ class RandomForestModel(Model):
                         #'max_leaf_nodes': [],
 
         # find best parameters
-        self.clf = GridSearchCV(clf_raw, param_grid=param_grid, cv=10)
+        self.clf = GridSearchCV(clf_raw, param_grid=param_grid, cv=10, scoring="accuracy", n_jobs=2)
         self.clf.fit(train_X, train_Y)
 
         print("Best parameters:")

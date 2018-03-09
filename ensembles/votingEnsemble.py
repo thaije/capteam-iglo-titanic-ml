@@ -1,6 +1,16 @@
 import pandas as pd
 import numpy as np
+import sys
 from sklearn.ensemble import VotingClassifier
+from sklearn.model_selection import cross_val_score
+np.warnings.filterwarnings('ignore') # annoying np warning in sklearn version
+
+
+# Settings
+# voting = 'soft' = averaging (best when models are close in performance)
+# voting = 'hard' = majority vote (best when large gaps in score)
+# weighting = None = every model has same weighting
+# weighting = e.g. [2,2,1] = give models with higher accuracy more weight, at the moment manual
 
 # Base object, which can be used as a ensemble for any task
 # This object contains the feature selection, the training and test methods
@@ -25,14 +35,21 @@ class VotingEnsemble(object):
 
         modelTupleList = []
 
-        # create a list of tuples with the model name and best model estimator from
-        # the gridsearch
-        for model in self.models:
-            modelTupleList.append((model.name, model.clf.best_estimator_))
+        try:
+            # create a list of tuples with the model name and best model estimator from
+            # the gridsearch
+            for model in self.models:
+                modelTupleList.append((model.name, model.clf.best_estimator_))
+        except AttributeError:
+            print("Error: Ensemble model expects the best estimator under model.clf.best_estimator_ (default location after gridsearch), but could not locate it for " , model.name)
+            sys.exit()
 
         print ("\nTraining voting classifier..")
+
         # fit the voting classifier
-        self.clf = VotingClassifier(estimators=modelTupleList, voting='soft', n_jobs=4)
+        self.clf = VotingClassifier(estimators = modelTupleList, voting='soft', weights=None, n_jobs=4)
+        scores = cross_val_score(estimator = self.clf, X=train_X, y=train_Y, cv=10, scoring='accuracy', n_jobs=1)
+        print("10-fold CV over train set: average", np.mean(scores), " std:", np.std(scores), " highest:", np.max(scores))
         self.clf.fit(train_X, train_Y)
 
 

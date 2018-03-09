@@ -1,5 +1,5 @@
 import argparse
-# import auxiliary.modelPlots as plottery
+import auxiliary.modelPlots as plottery
 from input_output.TitanicLoader import TitanicLoader
 from preprocessing.TitanicPreprocessor import TitanicPreprocessor
 from featureEngineering.TitanicFeatures import TitanicFeatures
@@ -23,7 +23,8 @@ class Pipeline(object):
         self.loader = TitanicLoader()
         self.preprocessor = TitanicPreprocessor()
         self.features = TitanicFeatures()
-        self.models = [RandomForestModel(self.params), SVMModel(self.params) , KNNModel(self.params)]
+        self.models = [RandomForestModel(self.params), SVMModel(self.params)]
+        # self.models = [RandomForestModel(self.params), SVMModel(self.params), KNNModel(self.params)]
         self.saver = TitanicSaver()
 
     def run(self):
@@ -56,6 +57,10 @@ class Pipeline(object):
         ve.train(x_train, y_train)
         ve.test(x_test, test_labels)
         self.saver.save_predictions(ve.predictions, 'predictions/' + ve.name + '.csv')
+
+        # show accuracies and correlation of models
+        plottery.compareModelAcc(self.models)
+        plottery.plotModelCorrelation(self.models)
 
 
 if __name__ == '__main__':

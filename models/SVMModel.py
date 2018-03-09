@@ -32,12 +32,15 @@ class SVMModel(Model):
 
         print("Training model..")
         param_grid = [
-            {'C': [0.01, 0.1,1], 'kernel': ['linear']}
+            # {'C': [0.01, 0.1, 1], 'kernel': ['linear']}
+            {'C': [0.1], 'kernel': ['linear']} # just use best of previous grid search
         ]
 
-        # probability=True is needed for it to work with the ensemble learning
+        # probability=True makes it slower, is needed for it to work with the ensemble learning
         clf_raw = svm.SVC(probability=True)
-        self.clf = GridSearchCV(clf_raw, param_grid, cv=10)
+        self.clf = GridSearchCV(clf_raw, param_grid, cv=10, scoring="accuracy", n_jobs=2)
+
+
         self.clf.fit(train_X, train_Y)
         print (self.clf.best_params_)
         self.acc = self.clf.best_score_
