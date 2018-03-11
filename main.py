@@ -8,7 +8,8 @@ from models.SVMModel import SVMModel
 from models.KNNModel import KNNModel
 from ensembles.votingEnsemble import VotingEnsemble
 from input_output.TitanicSaver import TitanicSaver
-
+from models.MLPModel import MLP
+from models.GBRTModel import GBRT
 
 class Pipeline(object):
     def __init__(self):
@@ -23,8 +24,8 @@ class Pipeline(object):
         self.loader = TitanicLoader()
         self.preprocessor = TitanicPreprocessor()
         self.features = TitanicFeatures()
-        self.models = [RandomForestModel(self.params), SVMModel(self.params)]
-        # self.models = [RandomForestModel(self.params), SVMModel(self.params), KNNModel(self.params)]
+        # self.models = [RandomForestModel(self.params), SVMModel(self.params)]
+        self.models = [RandomForestModel(self.params),GBRT(self.params), SVMModel(self.params), KNNModel(self.params), MLP(self.params)]
         self.saver = TitanicSaver()
 
     def run(self):
