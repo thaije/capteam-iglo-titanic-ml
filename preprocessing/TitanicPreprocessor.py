@@ -1,15 +1,15 @@
 import pandas as pd
 import numpy as np
-from preprocessing.Preprocesser import Preprocesser
+from preprocessing.Preprocessor import Preprocessor
 
 
 # Default processor for the titanic task, fills empty fields etc.
-class TitanicPreprocessor(Preprocesser):
+class TitanicPreprocessor(Preprocessor):
 
     # default processing for the Titanic task
     def preprocess_data(self, data, verbose=False):
 
-        print ("preprocessing data..")
+        print ("Preprocessing data..")
 
         # replace Sex labels with numerical ID
         # ['female','male'] => [0,1]
@@ -34,7 +34,7 @@ class TitanicPreprocessor(Preprocesser):
 
         if verbose:
             print( "\n" + ('-' * 40) )
-            print( " Data After preprocessing")
+            print( "Data After preprocessing")
             print( '-' * 40)
             print( data.head() )
 

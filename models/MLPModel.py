@@ -1,26 +1,23 @@
+# Base object, which can be used as a model for any task
+# The model contains the feature selection for this model, the training and test methods
 from models.Model import Model
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.model_selection import GridSearchCV
 import numpy as np
-import validation.CrossValidate as CV
+from sklearn.model_selection import GridSearchCV
+from sklearn.neural_network import MLPClassifier
 
-# This model contains the code for a k-nearest neihgbours model for the Titanic task, including
-# training and testing methods.
-class KNNModel(Model):
+class MLP(Model):
     def __init__(self, params):
         self.params = params
-        self.train_set_size = -1
-        # used for the name of the prediction file
-        self.name = "KNN"
+        self.featureList = []
+        self.acc = -1
+        # NOTE: change this to the name of your model, it is used for the name of the prediction output file
+        self.name = "MLP"
 
     def feature_selection(self, x_train, y_train):
-        # we only want numerical variables
         self.featureList = list(x_train.dtypes[x_train.dtypes != 'object'].index)
 
         return self.featureList
-
-
-    # train the model with the features determined in feature_selection()
+    # Training data should probably be a split of features and labels [X, Y]
     def train(self, train_X, train_Y, model_args):
         if self.featureList == []:
             raise ValueError('No features selected. Please first run feature selection.')
@@ -31,26 +28,22 @@ class KNNModel(Model):
         train_Y = np.array(train_Y)
 
         print("Training model..")
+        param_grid = {'activation': ['identity', 'logistic', 'tanh', 'relu'],
+                      'solver': ['lbfgs','sgd','adam'],
+                      'hidden_layer_sizes': [(5,2),(10,2),(5,3,2)],
+                      'alpha': [1e-5],
+                      'learning_rate': ['constant', 'invscaling', 'adaptive'],
+                      }
 
-        # Hyper-parameter tuning
-        clf_raw = KNeighborsClassifier()
-        param_grid = {'n_neighbors': [1,2,3],
-                      'weights': ['distance', 'uniform'],
-                      'algorithm': ['ball_tree', 'kd_tree', 'brute']}
-
-        # find best parameters
+        clf_raw = MLPClassifier(random_state=1)
+        # clf_raw = MLPClassifier(solver='lbfgs', alpha=1e-5,hidden_layer_sizes = (5, 2), random_state = 1)
         self.clf = GridSearchCV(clf_raw, param_grid=param_grid, cv=10, scoring="accuracy", n_jobs=2)
+
         self.clf.fit(train_X, train_Y)
-
         print("Best parameters:")
-        print(self.clf.best_params_)
-
-        # print best performance of best model of gridsearch with cv
+        print (self.clf.best_params_)
         self.acc = self.clf.best_score_
-        print("Model with best parameters, average accuracy over K-folds:", self.acc)
 
-
-    # predict the test set
     def test(self, X_test, labels):
         if self.featureList == []:
             raise ValueError('No features selected. Please first run feature selection.')
@@ -61,7 +54,7 @@ class KNNModel(Model):
         y_pred = self.clf.predict(X_test)
 
         # Write predictions to csv file
+        id_offset = self.train_set_size
         self.predictions = []
         for i, prediction in enumerate(y_pred):
             self.predictions.append([labels[i], prediction])
-        pass
