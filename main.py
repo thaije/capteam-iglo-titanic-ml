@@ -36,8 +36,15 @@ class Pipeline(object):
                                                                        test_data_file=self.test_data_file)
 
         # preprocess the data and do feature engineering. We just add all features
-        [x_train, x_test] = self.preprocessor.preprocess_datasets([x_train, x_test])
-        [x_train, x_test] = self.features.engineer_features_multiple_ds([x_train, x_test])
+        # process in whole, so the train and test would have the same features (for one-hot encoding for example)
+        preprocessed = self.preprocessor.preprocess_datasets([x_train.append(x_test)])
+        engineered = self.features.engineer_features_multiple_ds(preprocessed)[0]
+
+        # Sanity check
+        assert len(engineered) == len(x_train) + len(x_test)
+
+        x_train = engineered[0:len(x_train)]
+        x_test = engineered[len(x_train):]
 
         # train all the models
         for model in self.models:
