@@ -1,10 +1,10 @@
 import pandas as pd
 import numpy as np
-from preprocessing.Preprocesser import Preprocesser
+from preprocessing.Preprocessor import Preprocessor
 
 
 # Default processor for the titanic task, fills empty fields etc.
-class TitanicPreprocessor(Preprocesser):
+class TitanicPreprocessor(Preprocessor):
 
     # default processing for the Titanic task
     def preprocess_data(self, data, verbose=False):
@@ -25,13 +25,16 @@ class TitanicPreprocessor(Preprocesser):
         freq_port = data.Embarked.dropna().mode()[0]
         data['Embarked'] = data['Embarked'].fillna(freq_port)
 
+        # remove the passenger id as it couldn't possibly be predictive
+        del data['PassengerId']
+
         # replace port numbers with numerical ID
         # ['S','C','Q'] => [1,2,3]
         data["Embarked"].replace(['S','C','Q'], [1,2,3], inplace=True)
 
         if verbose:
             print( "\n" + ('-' * 40) )
-            print( " Data After preprocessing")
+            print( "Data After preprocessing")
             print( '-' * 40)
             print( data.head() )
 
