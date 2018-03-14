@@ -10,11 +10,10 @@ from ensembles.votingEnsemble import VotingEnsemble
 from input_output.TitanicSaver import TitanicSaver
 from models.MLPModel import MLP
 from models.GBRTModel import GBRT
-
+from models.Bayes import Bayes
 
 class Pipeline(object):
-    def __init__(self, loader=TitanicLoader, preprocessor=TitanicPreprocessor, features=TitanicFeatures,
-                 models=[RandomForestModel], saver=TitanicSaver):
+    def __init__(self):
         parser = argparse.ArgumentParser()
         self.args = parser.parse_args()
         self.params = None
@@ -23,28 +22,21 @@ class Pipeline(object):
         self.training_data_file = "Data/train.csv"
         self.test_data_file = "Data/test.csv"
 
-        self.loader = loader()
-        self.preprocessor = preprocessor()
-        self.features = features()
-
-        self.models = [m(self.params) for m in models]
-        self.saver = saver()
+        self.loader = TitanicLoader()
+        self.preprocessor = TitanicPreprocessor()
+        self.features = TitanicFeatures()
+        # self.models = [RandomForestModel(self.params), SVMModel(self.params)]
+        self.models = [RandomForestModel(self.params),GBRT(self.params), SVMModel(self.params), KNNModel(self.params), MLP(self.params), Bayes(self.params)]
+        self.saver = TitanicSaver()
 
     def run(self):
         # load data. Test_labels are PassengerIds which we need to save for the submission
-        x_train, y_train, x_test, test_labels = self.loader.load_split(training_data_file=self.training_data_file,
-                                                                       test_data_file=self.test_data_file)
+        x_train, y_train, x_test, test_labels = self.loader.load_split(training_data_file=self.training_data_file, test_data_file=self.test_data_file)
 
         # preprocess the data and do feature engineering. We just add all features
-        # process in whole, so the train and test would have the same features (for one-hot encoding for example)
-        preprocessed = self.preprocessor.preprocess_datasets([x_train.append(x_test)])
-        engineered = self.features.engineer_features_multiple_ds(preprocessed)[0]
+        [x_train, x_test] = self.preprocessor.preprocess_datasets( [x_train, x_test] )
+        [x_train, x_test] = self.features.engineer_features_multiple_ds( [x_train, x_test] )
 
-        # Sanity check
-        assert len(engineered) == len(x_train) + len(x_test)
-
-        x_train = engineered[0:len(x_train)]
-        x_test = engineered[len(x_train):]
 
         # train all the models
         for model in self.models:
@@ -58,7 +50,6 @@ class Pipeline(object):
             print ("Predicting test set..")
             model.test(x_test, test_labels)
             self.saver.save_predictions(model.predictions, 'predictions/' + model.name + '.csv')
-
 
 
         # Create ensemble from all the trained models, and test the predictions output
@@ -75,5 +66,4 @@ class Pipeline(object):
 
 
 if __name__ == '__main__':
-    Pipeline(loader=TitanicLoader, preprocessor=TitanicPreprocessor, features=TitanicFeatures,
-                 models=[RandomForestModel,GBRT, SVMModel, KNNModel, MLP], saver=TitanicSaver).run()
+    Pipeline().run()

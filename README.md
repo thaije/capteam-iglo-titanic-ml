@@ -18,7 +18,7 @@ Fixes:
 
 Models:
 + XGBoost - Lis.
-+ implement (a lot of) models - 2 for L (ensemble random forrest stuff) and S (naive bayes, nn)
++ implement (a lot of) models - 2 for L (ensemble random forrest stuff) and S (naive bayes, nn, GBRT)
 + Outlier detection - K
 + voting ensemble learning - T
 + Check GP? - Z
