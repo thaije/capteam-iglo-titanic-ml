@@ -25,7 +25,6 @@ class Pipeline(object):
         self.loader = TitanicLoader()
         self.preprocessor = TitanicPreprocessor()
         self.features = TitanicFeatures()
-        # self.models = [RandomForestModel(self.params), SVMModel(self.params)]
         self.models = [RandomForestModel(self.params),GBRT(self.params), SVMModel(self.params), KNNModel(self.params), MLP(self.params), Bayes(self.params)]
         self.saver = TitanicSaver()
 
@@ -33,10 +32,16 @@ class Pipeline(object):
         # load data. Test_labels are PassengerIds which we need to save for the submission
         x_train, y_train, x_test, test_labels = self.loader.load_split(training_data_file=self.training_data_file, test_data_file=self.test_data_file)
 
-        # preprocess the data and do feature engineering. We just add all features
-        [x_train, x_test] = self.preprocessor.preprocess_datasets( [x_train, x_test] )
-        [x_train, x_test] = self.features.engineer_features_multiple_ds( [x_train, x_test] )
+        # process in whole, so the train and test would have the same features (for one-hot encoding for example)
+        preprocessed = self.preprocessor.preprocess_datasets([x_train.append(x_test)])
+        engineered = self.features.engineer_features_multiple_ds(preprocessed)[0]
 
+        # Sanity check
+        assert len(engineered) == len(x_train) + len(x_test)
+
+        # split data again
+        x_train = engineered[0:len(x_train)]
+        x_test = engineered[len(x_train):]
 
         # train all the models
         for model in self.models:

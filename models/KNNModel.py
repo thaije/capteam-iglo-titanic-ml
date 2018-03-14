@@ -17,6 +17,11 @@ class KNNModel(Model):
         # we only want numerical variables
         self.featureList = list(x_train.dtypes[x_train.dtypes != 'object'].index)
 
+        # import feature_selection as fs
+        # clf = RandomForestClassifier()
+        # clf.fit(x_train[self.featureList], y_train)
+        # fs.analyze_feature_importance(clf, self.featureList)
+
         return self.featureList
 
 
