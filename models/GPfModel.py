@@ -1,0 +1,190 @@
+from sklearn.base import BaseEstimator, ClassifierMixin
+import numpy as np
+from models.Model import Model
+from sklearn.model_selection import GridSearchCV
+
+
+class GeneticClassifier(BaseEstimator, ClassifierMixin):
+    """An example of classifier"""
+
+    def __init__(self, intValue=0, stringParam="defaultValue", otherParam=None):
+        """
+        Called when initializing the classifier
+        """
+        self.intValue = intValue
+        self.stringParam = stringParam
+
+        # THIS IS WRONG! Parameters should have same name as attributes
+        self.differentParam = otherParam
+        self.preds = None
+
+
+    def fit(self, X, y=None):
+        """
+        This should fit classifier. All the "work" should be done here.
+
+        Note: assert is not a good choice here and you should rather
+        use try/except blog with exceptions. This is just for short syntax.
+        """
+
+        # assert (type(self.intValue) == int), "intValue parameter must be integer"
+        # assert (type(self.stringParam) == str), "stringValue parameter must be string"
+        # assert (len(X) == 20), "X must be list with numerical values."
+
+        # self.treshold_ = (sum(X)/len(X)) + self.intValue  # mean + intValue
+
+        return self
+
+    def _meaning(self, data):
+        # returns True/False according to fitted classifier
+        # notice underscore on the beginning
+        return np.round(1.-(1./(1.+np.exp(-data))))
+
+    def _GeneticFunction(self, data):
+        return ((np.minimum( ((((0.058823499828577 + data["Sex"]) - np.cos((data["Pclass"] / 2.0))) * 2.0)),  ((0.885868))) * 2.0) +
+            np.maximum( ((data["SibSp"] - 2.409090042114258)),  ( -(np.minimum( (data["Sex"]),  (np.sin(data["Parch"]))) * data["Pclass"]))) +
+            (0.138462007045746 * ((np.minimum( (data["Sex"]),  (((data["Parch"] / 2.0) / 2.0))) * data["Age"]) - data["Cabin"])) +
+            np.minimum( ((np.sin((data["Parch"] * ((data["Fare"] - 0.720430016517639) * 2.0))) * 2.0)),  ((data["SibSp"] / 2.0))) +
+            np.maximum( (np.minimum( ( -np.cos(data["Embarked"])),  (0.138462007045746))),  (np.sin(((data["Cabin"] - data["Fare"]) * 2.0)))) +
+            -np.minimum( ((((data["Age"] * data["Parch"]) * data["Embarked"]) + data["Parch"])),  (np.sin(data["Pclass"]))) +
+            np.minimum( (data["Sex"]),  ((np.sin( -(data["Fare"] * np.cos((data["Fare"] * 1.630429983139038)))) / 2.0))) +
+            np.minimum( ((0.230145)),  (np.sin(np.minimum( (((67.0 / 2.0) * np.sin(data["Fare"]))),  (0.31830988618379069))))) +
+            np.sin((np.sin(data["Cabin"]) * (np.sin((12.6275)) * np.maximum( (data["Age"]),  (data["Fare"]))))) +
+            np.sin(((np.minimum( (data["Fare"]),  ((data["Cabin"] * data["Embarked"]))) / 2.0) *  -data["Fare"])) +
+            np.minimum( (((2.675679922103882 * data["SibSp"]) * np.sin(((96) * np.sin(data["Cabin"]))))),  (data["Parch"])) +
+            np.sin(np.sin((np.maximum( (np.minimum( (data["Age"]),  (data["Cabin"]))),  ((data["Fare"] * 0.31830988618379069))) * data["Cabin"]))) +
+            np.maximum( (np.sin(((12.4148) * (data["Age"] / 2.0)))),  (np.sin((-3.0 * data["Cabin"])))) +
+            (np.minimum( (np.sin((((np.sin(((data["Fare"] * 2.0) * 2.0)) * 2.0) * 2.0) * 2.0))),  (data["SibSp"])) / 2.0) +
+            ((data["Sex"] - data["SibSp"]) * (np.cos(((data["Embarked"] - 0.730768978595734) + data["Age"])) / 2.0)) +
+            ((np.sin(data["Cabin"]) / 2.0) - (np.cos(np.minimum( (data["Age"]),  (data["Embarked"]))) * np.sin(data["Embarked"]))) +
+            np.minimum( (0.31830988618379069),  ((data["Sex"] * (2.212120056152344 * (0.720430016517639 - np.sin((data["Age"] * 2.0))))))) +
+            (np.minimum( (np.cos(data["Fare"])),  (np.maximum( (np.sin(data["Age"])),  (data["Parch"])))) * np.cos((data["Fare"] / 2.0))) +
+            np.sin((data["Parch"] * np.minimum( ((data["Age"] - 1.5707963267948966)),  ((np.cos((data["Pclass"] * 2.0)) / 2.0))))) +
+            (data["Parch"] * (np.sin(((data["Fare"] * (0.623655974864960 * data["Age"])) * 2.0)) / 2.0)) +
+            (0.31830988618379069 * np.cos(np.maximum( ((0.602940976619720 * data["Fare"])),  ((np.sin(0.720430016517639) * data["Age"]))))) +
+            (np.minimum( ((data["SibSp"] / 2.0)),  (np.sin(((data["Pclass"] - data["Fare"]) * data["SibSp"])))) * data["SibSp"]) +
+            np.tanh((data["Sex"] * np.sin((5.199999809265137 * np.sin((data["Cabin"] * np.cos(data["Fare"]))))))) +
+            (np.minimum( (data["Parch"]),  (data["Sex"])) * np.cos(np.maximum( ((np.cos(data["Parch"]) + data["Age"])),  (3.1415926535897931)))) +
+            (np.minimum( (np.tanh(((data["Cabin"] / 2.0) + data["Parch"]))),  ((data["Sex"] + np.cos(data["Age"])))) / 2.0) +
+            (np.sin((np.sin(data["Sex"]) * (np.sin((data["Age"] * data["Pclass"])) * data["Pclass"]))) / 2.0) +
+            (data["Sex"] * (np.cos(((data["Sex"] + data["Fare"]) * ((8.48635) * (63)))) / 2.0)) +
+            np.minimum( (data["Sex"]),  ((np.cos((data["Age"] * np.tanh(np.sin(np.cos(data["Fare"]))))) / 2.0))) +
+            (np.tanh(np.tanh( -np.cos((np.maximum( (np.cos(data["Fare"])),  (0.094339601695538)) * data["Age"])))) / 2.0) +
+            (np.tanh(np.cos((np.cos(data["Age"]) + (data["Age"] + np.minimum( (data["Fare"]),  (data["Age"])))))) / 2.0) +
+            (np.tanh(np.cos((data["Age"] * ((-2.0 + np.sin(data["SibSp"])) + data["Fare"])))) / 2.0) +
+            (np.minimum( (((281) - data["Fare"])),  (np.sin((np.maximum( ((176)),  (data["Fare"])) * data["SibSp"])))) * 2.0) +
+            np.sin(((np.maximum( (data["Embarked"]),  (data["Age"])) * 2.0) * (((785) * 3.1415926535897931) * data["Age"]))) +
+            np.minimum( (data["Sex"]),  (np.sin( -(np.minimum( ((data["Cabin"] / 2.0)),  (data["SibSp"])) * (data["Fare"] / 2.0))))) +
+            np.sin(np.sin((data["Cabin"] * (data["Embarked"] + (np.tanh( -data["Age"]) + data["Fare"]))))) +
+            (np.cos(np.cos(data["Fare"])) * (np.sin((data["Embarked"] - ((734) * data["Fare"]))) / 2.0)) +
+            ((np.minimum( (data["SibSp"]),  (np.cos(data["Fare"]))) * np.cos(data["SibSp"])) * np.sin((data["Age"] / 2.0))) +
+            (np.sin((np.sin((data["SibSp"] * np.cos((data["Fare"] * 2.0)))) + (data["Cabin"] * 2.0))) / 2.0) +
+            (((data["Sex"] * data["SibSp"]) * np.sin(np.sin( -(data["Fare"] * data["Cabin"])))) * 2.0) +
+            (np.sin((data["SibSp"] * ((((5.428569793701172 + 67.0) * 2.0) / 2.0) * data["Age"]))) / 2.0) +
+            (data["Pclass"] * (np.sin(((data["Embarked"] * data["Cabin"]) * (data["Age"] - (1.07241)))) / 2.0)) +
+            (np.cos((((( -data["SibSp"] + data["Age"]) + data["Parch"]) * data["Embarked"]) / 2.0)) / 2.0) +
+            (0.31830988618379069 * np.sin(((data["Age"] * ((data["Embarked"] * np.sin(data["Fare"])) * 2.0)) * 2.0))) +
+            ((np.minimum( ((data["Age"] * 0.058823499828577)),  (data["Sex"])) - 0.63661977236758138) * np.tanh(np.sin(data["Pclass"]))) +
+            -np.minimum( ((np.cos(((727) * ((data["Fare"] + data["Parch"]) * 2.0))) / 2.0)),  (data["Fare"])) +
+            (np.minimum( (np.cos(data["Fare"])),  (data["SibSp"])) * np.minimum( (np.sin(data["Parch"])),  (np.cos((data["Embarked"] * 2.0))))) +
+            (np.minimum( (((data["Fare"] / 2.0) - 2.675679922103882)),  (0.138462007045746)) * np.sin((1.5707963267948966 * data["Age"]))) +
+            np.minimum( ((0.0821533)),  (((np.sin(data["Fare"]) + data["Embarked"]) - np.cos((data["Age"] * (9.89287)))))))
+
+    def _MungeData(self, data):
+        # Sex
+        data.drop(['Ticket', 'Name'], inplace=True, axis=1)
+        data.Sex.fillna('0', inplace=True)
+        data.loc[data.Sex != 'male', 'Sex'] = 0
+        data.loc[data.Sex == 'male', 'Sex'] = 1
+        # Cabin
+        data.Cabin.fillna('0', inplace=True)
+        data.loc[data.Cabin.str[0] == 'A', 'Cabin'] = 1
+        data.loc[data.Cabin.str[0] == 'B', 'Cabin'] = 2
+        data.loc[data.Cabin.str[0] == 'C', 'Cabin'] = 3
+        data.loc[data.Cabin.str[0] == 'D', 'Cabin'] = 4
+        data.loc[data.Cabin.str[0] == 'E', 'Cabin'] = 5
+        data.loc[data.Cabin.str[0] == 'F', 'Cabin'] = 6
+        data.loc[data.Cabin.str[0] == 'G', 'Cabin'] = 7
+        data.loc[data.Cabin.str[0] == 'T', 'Cabin'] = 8
+        # Embarked
+        data.loc[data.Embarked == 'C', 'Embarked'] = 1
+        data.loc[data.Embarked == 'Q', 'Embarked'] = 2
+        data.loc[data.Embarked == 'S', 'Embarked'] = 3
+        data.Embarked.fillna(0, inplace=True)
+        data.fillna(-1, inplace=True)
+        return data.astype(float)
+
+    def predict(self, X, y=None):
+        mungedtrain = self._MungeData(X)
+
+        self.preds = self._meaning(self._GeneticFunction(mungedtrain))
+
+        return self.preds
+
+    def predict_proba(self, X):
+        # predictions = self.preds
+        # predictions_ = [float(i) for i in predictions]
+        # notpreds = [float( not i) for i in predictions]
+        return [0.0, 1.0]
+
+    def score(self, X, y=None):
+        # counts number of values bigger than mean
+        return np.mean(abs(self.predict(X)-y))
+
+
+
+
+# This model contains the code for a RandomForest model for the Titanic task, including
+# feature selection, training and testing methods.
+class GPf(Model):
+    def __init__(self, params):
+        self.params = params
+        self.train_set_size = -1
+        # used for the name of the prediction file
+        self.name = "GPf"
+
+    def feature_selection(self, x_train, y_train):
+        pass
+
+    # train the model with the features determined in feature_selection()
+    def train(self, train_X, train_Y, model_args):
+
+
+        print("Training model..")
+
+        # Hyper-parameter tuning
+        clf_raw = GeneticClassifier()
+        param_grid = {"intValue" : [-10,-1,0,1,10]} # Just for show, not for do
+
+
+        # find best parameters
+        self.clf = GridSearchCV(clf_raw, param_grid=param_grid, cv=10, scoring="accuracy", n_jobs=2)
+        self.clf.fit(train_X, train_Y)
+
+        print("Best parameters:")
+        print(self.clf.best_params_)
+
+        # print best performance of best model of gridsearch with cv
+        self.acc = self.clf.best_score_
+        print("Model with best parameters, average accuracy over K-folds:", self.acc)
+
+
+        # # Cross-Validation to get performance estimate
+        # # NOTE: this gives a performance indication of clf_raw, not clf with the optimal parameters from the gridsearch
+        # clf_raw = RandomForestClassifier(bootstrap=True, min_samples_leaf=3, min_samples_split=10, criterion='gini', max_features=4,max_depth=None, n_estimators=250)
+        # cv_scores = CV.KFold(train_X, train_Y, clf_raw)
+        # print("Best accuracy:", str(np.max(cv_scores)) , ". Mean:", str(np.mean(cv_scores)), "| Std:", str(np.std(cv_scores)))
+
+
+    # predict the test set
+    def test(self, X_test, labels):
+        # if self.train_set_size == -1:
+        #     raise ValueError("Couldn't determine training set size, did you run feature_selection and train first?")
+
+        y_pred = self.clf.predict(X_test)
+
+        # Write predictions to csv file
+        self.predictions = []
+        for i, prediction in enumerate(y_pred):
+            self.predictions.append([labels[i], prediction])
+        pass
