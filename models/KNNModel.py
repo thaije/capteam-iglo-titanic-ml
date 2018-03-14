@@ -2,7 +2,6 @@ from models.Model import Model
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import GridSearchCV
 import numpy as np
-import validation.CrossValidate as CV
 
 # This model contains the code for a k-nearest neihgbours model for the Titanic task, including
 # training and testing methods.
@@ -17,10 +16,16 @@ class KNNModel(Model):
         # we only want numerical variables
         self.featureList = list(x_train.dtypes[x_train.dtypes != 'object'].index)
 
-        # import feature_selection as fs
-        # clf = RandomForestClassifier()
-        # clf.fit(x_train[self.featureList], y_train)
-        # fs.analyze_feature_importance(clf, self.featureList)
+        # remove non-categorical or duplicate features
+        self.featureList = ['Pclass', 'Sex', 'Embarked', 'Age_cat', 'Fare_cat', 'Age*Class', 'Ticket_firstchar', 'FamilySize', 'FamilySize_cat', 'IsAlone', 'Title']
+        # self.featureList.remove('Age')
+        # self.featureList.remove('SibSp')
+        # self.featureList.remove('Parch')
+        # self.featureList.remove('Fare')
+        # self.featureList.remove('Title_alt')
+        # self.featureList.remove('hasCabinData')
+        # self.featureList.remove('nameLength')
+        print (self.featureList)
 
         return self.featureList
 
@@ -36,12 +41,11 @@ class KNNModel(Model):
         train_Y = np.array(train_Y)
 
         print("Training model..")
-
         # Hyper-parameter tuning
         clf_raw = KNeighborsClassifier()
-        param_grid = {'n_neighbors': [1,2,3],
+        param_grid = {'n_neighbors': [3,4,5,6,7],
                       'weights': ['distance', 'uniform'],
-                      'algorithm': ['ball_tree', 'kd_tree', 'brute']}
+                      'algorithm': ['kd_tree', 'brute']}
 
         # find best parameters
         self.clf = GridSearchCV(clf_raw, param_grid=param_grid, cv=10, scoring="accuracy", n_jobs=2)

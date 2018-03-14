@@ -6,7 +6,7 @@ from sklearn.ensemble import GradientBoostingClassifier
 
 # This model contains the code for a GradientBoostingClassifier model for the Titanic task, including
 # feature selection, training and testing methods.
-class GBRT(Model):
+class GRBT(Model):
     def __init__(self, params):
         self.params = params
         self.train_set_size = -1
@@ -34,15 +34,14 @@ class GBRT(Model):
 
         # Hyper-parameter tuning
         clf_raw = GradientBoostingClassifier()
-        param_grid = {'max_features': ['sqrt',None,1],
-                      'n_estimators': [100],
-                      'max_depth': [3, None],
-                      'min_samples_split' :[3, 10, 15],
-                      'min_samples_leaf' : [3, 10, 15],
+        param_grid = {'max_features': [0.3, 1, None],
+                      'n_estimators' : [100, 200, 300],
+                      'max_depth': [4, 8],
+                      'min_samples_leaf': [10, 100,150],
                       }
 
         # find best parameters
-        self.clf = GridSearchCV(clf_raw, param_grid=param_grid, cv=10, scoring="accuracy", n_jobs=2)
+        self.clf = GridSearchCV(clf_raw, param_grid=param_grid, cv=10, scoring="accuracy", n_jobs=2, verbose=1)
         self.clf.fit(train_X, train_Y)
 
         print("Best parameters:")

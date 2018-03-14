@@ -11,7 +11,7 @@ class SVMModel(Model):
         self.featureList = []
         self.acc = -1
         # used for the name of the prediction file
-        self.name = "SVMM"
+        self.name = "SVM"
 
     def feature_selection(self, x_train, y_train):
         # we only want numerical variables

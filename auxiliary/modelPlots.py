@@ -23,6 +23,7 @@ def compareModelAcc(models):
     plt.show()
 
 
+# plot the correlation between the generated output predictions of each model
 def plotModelCorrelation(models):
     predictions = []
 
@@ -35,6 +36,48 @@ def plotModelCorrelation(models):
 
     # concatenate and plot predictions
     ensemble_results = pd.concat(predictions, axis=1)
-    g = sns.heatmap(ensemble_results.corr(), annot=True)
-    g = g.set_title("Correlation of generated predictions of models")
+    g = sns.heatmap(overlap_correlation(ensemble_results), annot=True)
+    # g = sns.heatmap(ensemble_results.corr(), annot=True)
+    g = g.set_title("Overlap of generated predictions of models")
     plt.show()
+
+
+# calculate the overlap between the given arrays. Thus: 2 models which have
+# prediction arrays containing only 2 identical predictions at the same index, and 98 wrong ones,
+# has an overlap of 0.02
+def overlap_correlation(ensemble_results):
+    numeric_df = ensemble_results._get_numeric_data()
+    cols = numeric_df.columns
+    idx = cols.copy()
+    mat = numeric_df.values.T
+    min_periods = 1
+    corrf = overlap
+    K = len(cols)
+    correl = np.empty((K, K), dtype=float)
+    mask = np.isfinite(mat)
+    for i, ac in enumerate(mat):
+        for j, bc in enumerate(mat):
+            if i > j:
+                continue
+            valid = mask[i] & mask[j]
+            if valid.sum() < min_periods:
+                c = np.nan
+            elif i == j:
+                c = 1.
+            elif not valid.all():
+                c = corrf(ac[valid], bc[valid])
+            else:
+                c = corrf(ac, bc)
+            correl[i, j] = c
+            correl[j, i] = c
+
+
+    correl = pd.DataFrame(correl, index=idx, columns=cols)
+    return correl
+
+# return howhow many of the items are identical in both arrays
+def overlap(a, b):
+    l1 = float(len(a))
+    l2 = np.count_nonzero(np.array(a)==np.array(b))
+    l = l2/l1
+    return l
