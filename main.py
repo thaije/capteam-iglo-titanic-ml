@@ -10,11 +10,12 @@ from models.KNNModel import KNNModel
 from ensembles.votingEnsemble import VotingEnsemble
 from input_output.TitanicSaver import TitanicSaver
 from models.MLPModel import MLP
-from models.GBRTModel import GBRT
+from models.GRBTModel import GRBT
 from models.Bayes import Bayes
 import pandas as pd
 class Pipeline(object):
-    def __init__(self):
+    def __init__(self, loader=TitanicLoader, preprocessor=TitanicPreprocessor, features=TitanicFeatures,
+             models=[RandomForestModel], saver=TitanicSaver):
         parser = argparse.ArgumentParser()
         self.args = parser.parse_args()
         self.params = None
@@ -23,11 +24,12 @@ class Pipeline(object):
         self.training_data_file = "Data/train.csv"
         self.test_data_file = "Data/test.csv"
 
-        self.loader = TitanicLoader()
-        self.preprocessor = TitanicPreprocessor()
-        self.features = TitanicFeatures()
-        self.models = [RandomForestModel(self.params),GBRT(self.params), SVMModel(self.params), KNNModel(self.params), MLP(self.params), Bayes(self.params)]
-        self.saver = TitanicSaver()
+        self.loader = loader()
+        self.preprocessor = preprocessor()
+        self.features = features()
+
+        self.models = [m(self.params) for m in models]
+        self.saver = saver()
 
     def run(self):
         # load data. Test_labels are PassengerIds which we need to save for the submission
@@ -79,4 +81,5 @@ class Pipeline(object):
 
 
 if __name__ == '__main__':
-    Pipeline().run()
+    Pipeline(loader=TitanicLoader, preprocessor=TitanicPreprocessor, features=TitanicFeatures,
+                 models=[KNNModel, Bayes, GRBT, MLP, RandomForestModel, SVMModel], saver=TitanicSaver).run()

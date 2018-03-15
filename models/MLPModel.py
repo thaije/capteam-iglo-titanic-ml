@@ -37,7 +37,7 @@ class MLP(Model):
 
         clf_raw = MLPClassifier(random_state=1)
         # clf_raw = MLPClassifier(solver='lbfgs', alpha=1e-5,hidden_layer_sizes = (5, 2), random_state = 1)
-        self.clf = GridSearchCV(clf_raw, param_grid=param_grid, cv=10, scoring="accuracy", n_jobs=2)
+        self.clf = GridSearchCV(clf_raw, param_grid=param_grid, cv=10, scoring="accuracy", n_jobs=2, verbose=1)
 
         self.clf.fit(train_X, train_Y)
         print("Best parameters:")
