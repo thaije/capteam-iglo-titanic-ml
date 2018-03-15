@@ -11,8 +11,11 @@ from ensembles.votingEnsemble import VotingEnsemble
 from input_output.TitanicSaver import TitanicSaver
 from models.MLPModel import MLP
 from models.GRBTModel import GRBT
+from models.XGBoostModel import XGBoost
 from models.Bayes import Bayes
 import pandas as pd
+
+
 class Pipeline(object):
     def __init__(self, loader=TitanicLoader, preprocessor=TitanicPreprocessor, features=TitanicFeatures,
              models=[RandomForestModel], saver=TitanicSaver):
@@ -82,4 +85,4 @@ class Pipeline(object):
 
 if __name__ == '__main__':
     Pipeline(loader=TitanicLoader, preprocessor=TitanicPreprocessor, features=TitanicFeatures,
-                 models=[KNNModel, Bayes, GRBT, MLP, RandomForestModel, SVMModel], saver=TitanicSaver).run()
+                 models=[KNNModel, Bayes, GRBT, MLP, RandomForestModel, SVMModel, XGBoost], saver=TitanicSaver).run()
