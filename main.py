@@ -1,5 +1,6 @@
 import argparse
 import auxiliary.modelPlots as plottery
+import auxiliary.outlierDetection as outliers
 from input_output.TitanicLoader import TitanicLoader
 from preprocessing.TitanicPreprocessor import TitanicPreprocessor
 from featureEngineering.TitanicFeatures import TitanicFeatures
@@ -11,7 +12,7 @@ from input_output.TitanicSaver import TitanicSaver
 from models.MLPModel import MLP
 from models.GBRTModel import GBRT
 from models.Bayes import Bayes
-
+import pandas as pd
 class Pipeline(object):
     def __init__(self):
         parser = argparse.ArgumentParser()
@@ -32,8 +33,15 @@ class Pipeline(object):
         # load data. Test_labels are PassengerIds which we need to save for the submission
         x_train, y_train, x_test, test_labels = self.loader.load_split(training_data_file=self.training_data_file, test_data_file=self.test_data_file)
 
+        # detect outliers
+        out = outliers.detect_outliers(x_train,2,["Age","SibSp","Parch","Fare"])
+        # drop outliers
+        x_train = x_train.drop(out, axis=0).reset_index(drop=True)
+        y_train = y_train.drop(out, axis=0).reset_index(drop=True)
+
         # process in whole, so the train and test would have the same features (for one-hot encoding for example)
-        preprocessed = self.preprocessor.preprocess_datasets([x_train.append(x_test)])
+        combined = pd.concat([x_train,x_test],ignore_index=True)
+        preprocessed = self.preprocessor.preprocess_datasets([combined])
         engineered = self.features.engineer_features_multiple_ds(preprocessed)[0]
 
         # Sanity check

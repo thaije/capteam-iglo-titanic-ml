@@ -1,5 +1,7 @@
 import pandas as pd
 import re
+
+from auxiliary.frameWrangler import one_hot
 from featureEngineering.Features import Features
 
 
@@ -24,10 +26,11 @@ class TitanicFeatures(Features):
         data = createIsAlone(data)
         data = createTitle(data)
         data = createTitleAlt(data)
-
+        # cabin features
         data = extractCabinFeatures(data)
 
         data = extractNameFeatures(data)
+        data = createEmbarked(data)
 
         if verbose:
             print( "\n" + ('-' * 40) )
@@ -100,14 +103,20 @@ def createIsAlone(data):
 
     return data
 
+def createEmbarked(data):
+    # one-hot encoding of the embarked feature
+    data = one_hot(data, ['Embarked'], drop_col=False)
+
+    return data
+
 def extractCabinFeatures(data):
     # absence of cabin data might be associated with lower status
     data['hasCabinData'] = data["Cabin"].isnull().apply(lambda x: not x)
 
     # get the deck information
-    #  data['Deck'] = data['Cabin'].str.slice(0,1)
+    data['Deck'] = data['Cabin'].str.slice(0,1)
     # replace N/A
-    #  data['Deck'] = data['Deck'].fillna("N")
+    data['Deck'] = data['Deck'].fillna("N")
 
     # get the room information
     #  data['Room'] = \
@@ -116,43 +125,8 @@ def extractCabinFeatures(data):
     #  data['Room'] = data['Room'].fillna(data["Room"].mean())
 
     # get a one-hot encoding of deck numbers
-    #  data = one_hot(data, ['Deck'], drop_col=True)
-
+    data = one_hot(data, ['Deck'], drop_col=False)
     return data
-
-# helper functions, move!
-
-def one_hot_column(df, label, drop_col=False):
-    '''
-    This function will one hot encode the chosen column.
-    Args:
-        df: Pandas dataframe
-        label: Label of the column to encode
-        drop_col: boolean to decide if the chosen column should be dropped
-    Returns:
-        pandas dataframe with the given encoding
-    '''
-    one_hot = pd.get_dummies(df[label], prefix=label)
-    if drop_col:
-        df = df.drop(label, axis=1)
-    df = df.join(one_hot)
-    return df
-
-
-def one_hot(df, labels, drop_col=False):
-    '''
-    This function will one hot encode a list of columns.
-    Args:
-        df: Pandas dataframe
-        labels: list of the columns to encode
-        drop_col: boolean to decide if the chosen column should be dropped
-    Returns:
-        pandas dataframe with the given encoding
-    '''
-    for label in labels:
-        df = one_hot_column(df, label, drop_col)
-    return df
-
 
 
 

@@ -5,26 +5,15 @@
 # data analysis and wrangling
 import pandas as pd
 import numpy as np
-import random as rnd
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
-import feature_selection as fs
+from auxiliary import feature_importance as fs
 from sklearn.feature_selection import chi2
-from sklearn.feature_selection import mutual_info_classif
 # visualization
-import seaborn as sns
-import matplotlib.pyplot as plt
 
 
 # machine learning
-from sklearn.linear_model import LogisticRegression
-from sklearn.svm import SVC, LinearSVC
+from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.naive_bayes import GaussianNB
-from sklearn.linear_model import Perceptron
-from sklearn.linear_model import SGDClassifier
-from sklearn.tree import DecisionTreeClassifier
 
 # Input data files are available in the "../input/" directory.
 # For example, running this (by clicking run or pressing Shift+Enter) will list the files in the input directory
