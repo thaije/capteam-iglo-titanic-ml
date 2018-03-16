@@ -50,7 +50,7 @@ class SVM(Model):
         # self.clf, optimalScore, scores = CV.LeaveOneOut(X_train, y_train, clf)
         # self.clf, optimalScore, scores = CV.StratifiedKFold(X_train, y_train, clf, 10)
 
-        print("Model with best parameters, average accuracy over K-folds:", self.acc)
+        print("Model with best parameters, train set avg CV accuracy:", self.acc)
 
 
     # predict the test set

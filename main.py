@@ -6,6 +6,7 @@ from input_output.TitanicLoader import TitanicLoader
 from preprocessing.TitanicPreprocessor import TitanicPreprocessor
 from featureEngineering.TitanicFeatures import TitanicFeatures
 from input_output.TitanicSaver import TitanicSaver
+from validation.testPerformance import testAccuracy
 from ensembles.votingEnsemble import VotingEnsemble
 from models.RandomForestModel import RF
 from models.SVMModel import SVM
@@ -70,6 +71,8 @@ class Pipeline(object):
             model.test(x_test, test_labels)
             self.saver.save_predictions(model.predictions, 'predictions/' + model.name + '.csv')
 
+            print("Accuracy on test set is:", testAccuracy(model.name))
+
 
         # Create ensemble from all the trained models, and test the predictions output
         # NOTE: assumes you trained your model with Gridsearch
@@ -78,6 +81,7 @@ class Pipeline(object):
         ve.train(x_train, y_train)
         ve.test(x_test, test_labels)
         self.saver.save_predictions(ve.predictions, 'predictions/' + ve.name + '.csv')
+        print("Accuracy on test set is:", testAccuracy(ve.name))
 
         # show accuracies and correlation of models
         plottery.compareModelAcc(self.models)

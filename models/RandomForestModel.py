@@ -65,7 +65,7 @@ class RF(Model):
 
         # print best performance of best model of gridsearch with cv
         self.acc = self.clf.best_score_
-        print("Model with best parameters, average accuracy over K-folds:", self.acc)
+        print("Model with best parameters, train set avg CV accuracy:", self.acc)
 
 
         # # Cross-Validation to get performance estimate
