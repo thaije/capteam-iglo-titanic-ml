@@ -33,11 +33,11 @@ class XGBoost(Model):
 
         # Hyper-parameter tuning
         param_grid = {
-            'min_child_weight': [1, 3, 5],
+            'min_child_weight': [1, 3],
             'gamma': [0.5, 1],
             'subsample': [0.8, 1.0],
             'colsample_bytree': [0.6, 0.8, 1.0],
-            'max_depth': [3, 5, 7]
+            'max_depth': [3, 5]
             }
         ind_params = {
             'learning_rate': 0.1,  # TODO find optimum
@@ -47,9 +47,12 @@ class XGBoost(Model):
             'objective': 'binary:logistic'
         }
         clf_raw = XGBClassifier(**ind_params)
+        # param_grid = {'gamma': [0]}
+        # clf_raw = XGBClassifier()
+
 
         # find best parameters
-        self.clf = GridSearchCV(clf_raw, param_grid=param_grid, cv=10, scoring="accuracy", n_jobs=2)
+        self.clf = GridSearchCV(clf_raw, param_grid=param_grid, cv=10, scoring="accuracy", n_jobs=2, verbose=1)
         self.clf.fit(train_X, train_Y)
 
         print("Best parameters:")

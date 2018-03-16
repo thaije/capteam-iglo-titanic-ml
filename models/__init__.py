@@ -1,2 +1,2 @@
 from .Model import Model
-from .RandomForestModel import RandomForestModel
+from .RandomForestModel import RF

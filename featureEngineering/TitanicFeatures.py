@@ -32,11 +32,16 @@ class TitanicFeatures(Features):
         data = extractNameFeatures(data)
         data = createEmbarked(data)
 
+        data = one_hot(data, ['Title'], drop_col=False)
+
         if verbose:
             print( "\n" + ('-' * 40) )
             print( " Data after feature engineering")
             print( '-' * 40)
             print( data.head() )
+
+        print ("Features:")
+        print (list(data))
 
         return data
 

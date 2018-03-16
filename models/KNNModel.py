@@ -5,7 +5,7 @@ import numpy as np
 
 # This model contains the code for a k-nearest neihgbours model for the Titanic task, including
 # training and testing methods.
-class KNNModel(Model):
+class KNN(Model):
     def __init__(self, params):
         self.params = params
         self.train_set_size = -1
@@ -18,13 +18,6 @@ class KNNModel(Model):
 
         # remove non-categorical or duplicate features
         self.featureList = ['Pclass', 'Sex', 'Embarked', 'Age_cat', 'Fare_cat', 'Age*Class', 'Ticket_firstchar', 'FamilySize', 'FamilySize_cat', 'IsAlone', 'Title']
-        # self.featureList.remove('Age')
-        # self.featureList.remove('SibSp')
-        # self.featureList.remove('Parch')
-        # self.featureList.remove('Fare')
-        # self.featureList.remove('Title_alt')
-        # self.featureList.remove('hasCabinData')
-        # self.featureList.remove('nameLength')
         print (self.featureList)
 
         return self.featureList

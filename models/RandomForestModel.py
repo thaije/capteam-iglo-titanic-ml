@@ -7,7 +7,7 @@ import validation.CrossValidate as CV
 
 # This model contains the code for a RandomForest model for the Titanic task, including
 # feature selection, training and testing methods.
-class RandomForestModel(Model):
+class RF(Model):
     def __init__(self, params):
         self.params = params
         self.train_set_size = -1
@@ -23,7 +23,7 @@ class RandomForestModel(Model):
 
         # TODO: remove this later
         # Check feature importances for basic classifier
-        # import feature_selection as fs
+        # import auxiliary.feature_importance as fs
         # clf = RandomForestClassifier()
         # clf.fit(x_train[self.featureList], y_train)
         # fs.analyze_feature_importance(clf, self.featureList)

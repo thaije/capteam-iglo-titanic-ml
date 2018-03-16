@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.model_selection import GridSearchCV
 from sklearn import svm
 
-class SVMModel(Model):
+class SVM(Model):
 
     def __init__(self, params):
         self.params = params

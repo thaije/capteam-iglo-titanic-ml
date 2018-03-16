@@ -4,7 +4,7 @@ from sklearn.feature_selection import SelectKBest
 
 # analyze the feature importance in a random forest model
 # see: http://scikit-learn.org/stable/auto_examples/ensemble/plot_forest_importances.html
-def analyze_feature_importance(forest,feature_labels):
+def analyze_feature_importance(forest, feature_labels):
     # obtain relative feature importances
     importances = forest.feature_importances_
     # compute standard deviation tree-wise

@@ -16,15 +16,7 @@ class Bayes(Model):
     def feature_selection(self, x_train, y_train):
         # we only want numerical variables
         self.featureList = list(x_train.dtypes[x_train.dtypes != 'object'].index)
-
-        self.featureList.remove('Age')
-        self.featureList.remove('SibSp')
-        self.featureList.remove('Parch')
-        self.featureList.remove('Fare')
-        self.featureList.remove('Title_alt')
-        self.featureList.remove('hasCabinData')
-        self.featureList.remove('nameLength')
-
+        self.featureList = ['Pclass', 'Sex', 'Embarked', 'Age_cat', 'Fare_cat', 'Age*Class', 'Ticket_firstchar', 'FamilySize', 'FamilySize_cat', 'IsAlone', 'Title']
         print (self.featureList)
 
         return self.featureList
@@ -46,11 +38,6 @@ class Bayes(Model):
         clf_raw = GaussianNB()
         param_grid = {'priors': [None]
                       }
-
-        from sklearn.model_selection import cross_val_score, StratifiedKFold
-        kfold = StratifiedKFold(n_splits=10)
-        cv = cross_val_score(clf_raw, train_X, y = train_Y, scoring = "accuracy", cv = kfold, n_jobs=4)
-        print ("Mean: ", cv.mean(), " std:", cv.std())
 
         # find best parameters
         self.clf = GridSearchCV(clf_raw, param_grid=param_grid, cv=10, scoring="accuracy", n_jobs=2)

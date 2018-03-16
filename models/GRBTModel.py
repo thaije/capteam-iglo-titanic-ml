@@ -16,7 +16,6 @@ class GRBT(Model):
     def feature_selection(self, x_train, y_train):
         # we only want numerical variables
         self.featureList = list(x_train.dtypes[x_train.dtypes != 'object'].index)
-
         return self.featureList
 
 

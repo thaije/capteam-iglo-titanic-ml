@@ -1,24 +1,24 @@
 import argparse
+import pandas as pd
 import auxiliary.modelPlots as plottery
 import auxiliary.outlierDetection as outliers
 from input_output.TitanicLoader import TitanicLoader
 from preprocessing.TitanicPreprocessor import TitanicPreprocessor
 from featureEngineering.TitanicFeatures import TitanicFeatures
-from models.RandomForestModel import RandomForestModel
-from models.SVMModel import SVMModel
-from models.KNNModel import KNNModel
-from ensembles.votingEnsemble import VotingEnsemble
 from input_output.TitanicSaver import TitanicSaver
+from ensembles.votingEnsemble import VotingEnsemble
+from models.RandomForestModel import RF
+from models.SVMModel import SVM
+from models.KNNModel import KNN
 from models.MLPModel import MLP
 from models.GRBTModel import GRBT
 from models.XGBoostModel import XGBoost
-from models.Bayes import Bayes
-import pandas as pd
+from models.BayesModel import Bayes
 
 
 class Pipeline(object):
     def __init__(self, loader=TitanicLoader, preprocessor=TitanicPreprocessor, features=TitanicFeatures,
-             models=[RandomForestModel], saver=TitanicSaver):
+             models=[RF], saver=TitanicSaver):
         parser = argparse.ArgumentParser()
         self.args = parser.parse_args()
         self.params = None
@@ -39,7 +39,8 @@ class Pipeline(object):
         x_train, y_train, x_test, test_labels = self.loader.load_split(training_data_file=self.training_data_file, test_data_file=self.test_data_file)
 
         # detect outliers
-        out = outliers.detect_outliers(x_train,2,["Age","SibSp","Parch","Fare"])
+        out = outliers.detect_outliers(x_train, 2, ["Age", "SibSp", "Parch", "Fare"])
+        print ("Dropping ", len(out) , " outliers")
         # drop outliers
         x_train = x_train.drop(out, axis=0).reset_index(drop=True)
         y_train = y_train.drop(out, axis=0).reset_index(drop=True)
@@ -85,4 +86,4 @@ class Pipeline(object):
 
 if __name__ == '__main__':
     Pipeline(loader=TitanicLoader, preprocessor=TitanicPreprocessor, features=TitanicFeatures,
-                 models=[KNNModel, Bayes, GRBT, MLP, RandomForestModel, SVMModel, XGBoost], saver=TitanicSaver).run()
+                 models=[KNN, RF, SVM, MLP, XGBoost, GRBT], saver=TitanicSaver).run()
