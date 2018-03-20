@@ -35,17 +35,21 @@ class SVM(Model):
 
         print("Training model..")
         param_grid = [
-            # {'C': [0.01, 0.1, 1], 'kernel': ['linear']}
-            {'C': [0.1], 'kernel': ['linear']} # just use best of previous grid search
+             {'C': [0.01, 0.1, 1], 'kernel': ['linear','rbf']}
         ]
 
-        # probability=True makes it slower, is needed for it to work with the ensemble learning
-        clf_raw = svm.SVC(probability=True)
+        # optimize on SVM with no added in probability estimates
+        clf_raw = svm.SVC(probability=False)
         self.clf = GridSearchCV(clf_raw, param_grid, cv=10, scoring="accuracy", n_jobs=2)
 
         self.clf.fit(train_X, train_Y)
         print (self.clf.best_params_)
         self.acc = self.clf.best_score_
+
+        bestParams = self.clf.best_params_
+        # fit an SVM with probability estimates directly with the best params
+        self.clf = svm.SVC(C =bestParams['C'], kernel=bestParams['kernel'], probability=True).fit(train_X,train_Y)
+
 
         # Cross Validation
       #  self.clf, self.acc, scores = CV.KFold(train_X, train_Y, clf, 4)
