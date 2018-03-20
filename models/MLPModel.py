@@ -15,7 +15,12 @@ class MLP(Model):
 
     def feature_selection(self, x_train, y_train):
         self.featureList = list(x_train.dtypes[x_train.dtypes != 'object'].index)
-
+        self.featureList = ['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare',
+            'Embarked', 'Age_cat', 'Fare_cat', 'Age*Class', 'Ticket_firstchar',
+            'FamilySize', 'FamilySize_cat', 'IsAlone', 'Title', 'Title_alt',
+            'Embarked_1', 'Embarked_2', 'Embarked_3', 'Title_1', 'Title_2',
+            'Title_3', 'Title_4', 'Title_5']
+        print (self.featureList)
         return self.featureList
     # Training data should probably be a split of features and labels [X, Y]
     def train(self, train_X, train_Y, model_args):
@@ -28,12 +33,7 @@ class MLP(Model):
         train_Y = np.array(train_Y)
 
         print("Training model..")
-        param_grid = {'activation': ['identity', 'logistic', 'tanh', 'relu'],
-                      'solver': ['lbfgs','sgd','adam'],
-                      'hidden_layer_sizes': [(5,2),(10,2),(5,3,2)],
-                      'alpha': [1e-5],
-                      'learning_rate': ['constant', 'invscaling', 'adaptive'],
-                      }
+        param_grid = {'hidden_layer_sizes': [(5,2),(10,2),(5,3,2)] }
 
         clf_raw = MLPClassifier(random_state=1)
         # clf_raw = MLPClassifier(solver='lbfgs', alpha=1e-5,hidden_layer_sizes = (5, 2), random_state = 1)

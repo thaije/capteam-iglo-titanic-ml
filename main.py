@@ -84,10 +84,10 @@ class Pipeline(object):
         print("Accuracy on test set is:", testAccuracy(ve.name))
 
         # show accuracies and correlation of models
-        plottery.compareModelAcc(self.models)
-        plottery.plotModelCorrelation(self.models)
+        # plottery.compareModelAcc(self.models)
+        # plottery.plotModelCorrelation(self.models)
 
 
 if __name__ == '__main__':
     Pipeline(loader=TitanicLoader, preprocessor=TitanicPreprocessor, features=TitanicFeatures,
-                 models=[KNN, RF, SVM, MLP, XGBoost, GRBT], saver=TitanicSaver).run()
+                 models=[RF, MLP, SVM, GRBT, XGBoost, KNN, Bayes], saver=TitanicSaver).run()

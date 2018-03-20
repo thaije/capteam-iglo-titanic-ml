@@ -17,7 +17,10 @@ class SVM(Model):
         # we only want numerical variables
 
         self.featureList = list(x_train.dtypes[x_train.dtypes != 'object'].index)
-
+        self.featureList = ["Pclass", "Sex", "Age", "Fare", "Embarked", "Age*Class",
+            "Ticket_firstchar", "FamilySize", "FamilySize_cat", "Embarked_1",
+            "Embarked_2", "Embarked_3", "Title_1", "Title_2", "Title_3", "Title_4", "Title_5"]
+        print (self.featureList)
         return self.featureList
 
     # train the model with the features determined in feature_selection()

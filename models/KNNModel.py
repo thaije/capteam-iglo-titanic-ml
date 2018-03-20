@@ -17,7 +17,7 @@ class KNN(Model):
         self.featureList = list(x_train.dtypes[x_train.dtypes != 'object'].index)
 
         # remove non-categorical or duplicate features
-        self.featureList = ['Pclass', 'Sex', 'Embarked', 'Age_cat', 'Fare_cat', 'Age*Class', 'Ticket_firstchar', 'FamilySize', 'FamilySize_cat', 'IsAlone', 'Title']
+        self.featureList = ['Pclass', 'Sex', 'Embarked', 'Age_cat', 'Fare_cat', 'Ticket_firstchar', 'FamilySize', 'FamilySize_cat', 'Title_alt']
         print (self.featureList)
 
         return self.featureList

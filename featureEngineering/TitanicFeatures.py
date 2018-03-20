@@ -26,10 +26,11 @@ class TitanicFeatures(Features):
         data = createIsAlone(data)
         data = createTitle(data)
         data = createTitleAlt(data)
-        # cabin features
-        data = extractCabinFeatures(data)
 
-        data = extractNameFeatures(data)
+        # cabin features
+        # data = extractCabinFeatures(data)
+        #
+        # data = extractNameFeatures(data)
         data = createEmbarked(data)
 
         data = one_hot(data, ['Title'], drop_col=False)
@@ -40,6 +41,7 @@ class TitanicFeatures(Features):
             print( '-' * 40)
             print( data.head() )
 
+        # data = data.drop(['SibSp', 'Parch'], axis=1)
         print ("Features:")
         print (list(data))
 

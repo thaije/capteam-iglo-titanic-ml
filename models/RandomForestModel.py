@@ -31,6 +31,11 @@ class RF(Model):
         # print( "Feature list after feature selection:" )
         # print(self.featureList)
 
+        self.featureList = ['Pclass', 'Sex', 'Age', 'Fare', 'Embarked', 'Age*Class',
+        'Ticket_firstchar', 'FamilySize', 'Embarked_1', 'Embarked_2', 'Embarked_3', 'Title_1', 'Title_2'
+        , 'Title_3', 'Title_4', 'Title_5']
+        print (self.featureList)
+
         return self.featureList
 
 
@@ -48,13 +53,20 @@ class RF(Model):
 
         # Hyper-parameter tuning
         clf_raw = RandomForestClassifier()
-        param_grid = {'max_features': [1, int(np.sqrt(len(self.featureList))), len(self.featureList)],
-                      'max_depth': [3, None],
-                      'min_samples_split' :[2, 3, 10],
-                      'min_samples_leaf' : [1, 3, 10],
-                      'criterion':['gini', 'entropy'],
-                      'bootstrap':[True, False]}
+        # param_grid = {'max_features': [1, int(np.sqrt(len(self.featureList))), len(self.featureList)],
+        #               'max_depth': [3, None],
+        #               'min_samples_split' :[2, 3, 10],
+        #               'min_samples_leaf' : [1, 3, 10],
+        #               'criterion':['gini', 'entropy'],
+        #               'bootstrap':[True, False]}
 
+        # best model so far
+        param_grid = {'max_features': [4],
+                      'max_depth': [None],
+                      'min_samples_split' :[10],
+                      'min_samples_leaf' : [10],
+                      'criterion':['gini'],
+                      'bootstrap':[True]}
 
         # find best parameters
         self.clf = GridSearchCV(clf_raw, param_grid=param_grid, cv=10, scoring="accuracy", n_jobs=2)
