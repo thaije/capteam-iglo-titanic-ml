@@ -3,6 +3,8 @@ import numpy as np
 import sys
 from sklearn.ensemble import VotingClassifier
 from sklearn.model_selection import cross_val_score
+from validation.testPerformance import testAccuracy
+from sklearn.model_selection import GridSearchCV
 np.warnings.filterwarnings('ignore') # annoying np warning in sklearn version
 
 
@@ -46,11 +48,24 @@ class VotingEnsemble(object):
 
         print ("\nTraining voting classifier..")
 
+        # Tuning weights - first implementation
+        accs = [testAccuracy(model.name) for model in self.models]
+        accs5 = [testAccuracy(model.name)**5 for model in self.models] # Basically would make accuracies of 50% count as nothing and exponentially increase importance of accruacy
+        accs3 = [testAccuracy(model.name)**3 for model in self.models]
+        param_grid = {'weights': [accs, None, accs5, accs3]}
+
+
         # fit the voting classifier
-        self.clf = VotingClassifier(estimators = modelTupleList, voting='soft', weights=None, n_jobs=4)
+        clf_raw= VotingClassifier(estimators = modelTupleList, voting='soft', n_jobs=4)
+        self.clf = GridSearchCV(clf_raw, param_grid=param_grid)
+
+
         scores = cross_val_score(estimator = self.clf, X=train_X, y=train_Y, cv=10, scoring='accuracy', n_jobs=1)
         print("10-fold CV over train set: average", np.mean(scores), " std:", np.std(scores), " highest:", np.max(scores))
         self.clf.fit(train_X, train_Y)
+
+        print("Best parameters:")
+        print(self.clf.best_params_)
 
 
     def test(self, test_X, labels):
