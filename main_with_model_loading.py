@@ -14,7 +14,7 @@ from models.SVMModel import SVM
 from models.KNNModel import KNN
 from models.MLPModel import MLP
 from models.GRBTModel import GRBT
-#from models.XGBoostModel import XGBoost
+from models.XGBoostModel import XGBoost
 from models.BayesModel import Bayes
 from models.AdaBoostModel import AdaBoostModel as AdaBoost
 from models.ExtraTreesModel import ExtraTreesModel as ET
@@ -77,14 +77,13 @@ class Pipeline(object):
                 # Warning message if we want to load a model but it does not exist.
                 if self.load_trained_model:
                     print("Saved model not found..")
-                    print("Training new model..\n")
                 # Check which features are optimal for this model, and train the model with them
                 model.feature_selection(x_train, y_train)
                 model.train(x_train, y_train, self.model_params)
             
                 # Save trained model to disk if desired.
                 if self.save_trained_model:
-                    print("Saving model to disk..")
+                    print("Model saved to  saved_models/" + model.name + ".pkl")
                     self.saver.save_model(model, 'saved_models/' + model.name + '.pkl')
 
             # Generate predictions for the test set and write to a csv file
@@ -111,5 +110,5 @@ class Pipeline(object):
 
 if __name__ == '__main__':
     Pipeline(loader=TitanicLoader, preprocessor=TitanicPreprocessor, features=TitanicFeatures,
-                 models=[Logit, RF, ET], saver=TitanicSaver, 
-                 save_trained_model=False, load_trained_model=True).run()
+                 models=[RF, MLP, SVM, GRBT, XGBoost, KNN, Bayes, Logit, ET, AdaBoost], saver=TitanicSaver, 
+                 save_trained_model=True, load_trained_model=True).run()
