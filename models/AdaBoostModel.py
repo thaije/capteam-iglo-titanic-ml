@@ -22,16 +22,13 @@ class AdaBoostModel(Model):
         # we only want numerical variables
         self.featureList = list(x_train.dtypes[x_train.dtypes != 'object'].index)
 
-        # TODO: remove this later
-        # Check feature importances for basic classifier
-        # import feature_selection as fs
-        # clf = AdaBoostClassifier()
-        # clf.fit(x_train[self.featureList], y_train)
-        # fs.analyze_feature_importance(clf, self.featureList)
+        self.featureList = ['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare',
+            'Embarked', 'Fare_cat', 'Age*Class', 'Ticket_firstchar',
+            'FamilySize', 'IsAlone',
+            'Embarked_1', 'Embarked_2', 'Embarked_3', 'Title_1', 'Title_2',
+            'Title_3', 'Title_4', 'Title_5']
 
-        # print( "Feature list after feature selection:" )
-        # print(self.featureList)
-
+        print(self.featureList)
         return self.featureList
 
 
@@ -50,7 +47,7 @@ class AdaBoostModel(Model):
         # Hyper-parameter tuning
         DTC = DecisionTreeClassifier()
         clf_raw = AdaBoostClassifier(base_estimator=DTC)
-        
+
         # Best parameters	              (found in a previous run)
         param_grid = {'n_estimators': [200],
                       'learning_rate': [0.1],
@@ -61,7 +58,7 @@ class AdaBoostModel(Model):
                       'base_estimator__max_features': [4],
                       'base_estimator__min_samples_split': [2],
                       'base_estimator__min_samples_leaf': [10]}
-        
+
 #        param_grid = {'n_estimators': [100, 200, 300],
 #                      'learning_rate': [0.1, 0.001, 0.0001, 0.00001],
 #                      'algorithm': ['SAMME', 'SAMME.R'],
@@ -83,12 +80,6 @@ class AdaBoostModel(Model):
         self.acc = self.clf.best_score_
         print("Model with best parameters, average accuracy over K-folds:", self.acc)
 
-
-        # # Cross-Validation to get performance estimate
-        # # NOTE: this gives a performance indication of clf_raw, not clf with the optimal parameters from the gridsearch
-        # clf_raw = AdaBoostClassifier()
-        # cv_scores = CV.KFold(train_X, train_Y, clf_raw)
-        # print("Best accuracy:", str(np.max(cv_scores)) , ". Mean:", str(np.mean(cv_scores)), "| Std:", str(np.std(cv_scores)))
 
 
     # predict the test set

@@ -21,16 +21,13 @@ class ExtraTreesModel(Model):
         # we only want numerical variables
         self.featureList = list(x_train.dtypes[x_train.dtypes != 'object'].index)
 
-        # TODO: remove this later
-        # Check feature importances for basic classifier
-        # import feature_selection as fs
-        # clf = ExtraTreesClassifier()
-        # clf.fit(x_train[self.featureList], y_train)
-        # fs.analyze_feature_importance(clf, self.featureList)
+        self.featureList = ['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare',
+            'Embarked', 'Age_cat', 'Fare_cat', 'Age*Class', 'Ticket_firstchar',
+            'FamilySize', 'FamilySize_cat', 'IsAlone', 'Title', 'Title_alt',
+            'Embarked_1', 'Embarked_2', 'Embarked_3', 'Title_1', 'Title_2',
+            'Title_3', 'Title_4', 'Title_5']
 
-        # print( "Feature list after feature selection:" )
-        # print(self.featureList)
-
+        print(self.featureList)
         return self.featureList
 
 
@@ -48,7 +45,7 @@ class ExtraTreesModel(Model):
 
         # Hyper-parameter tuning
         clf_raw = ExtraTreesClassifier()
-      
+
 #        param_grid = {'max_features': [1, int(np.sqrt(len(self.featureList))), len(self.featureList)],
 #                      'max_depth': [3, None],
 #                      'min_samples_split' :[2, 3, 10],
@@ -56,12 +53,11 @@ class ExtraTreesModel(Model):
 #                      'criterion':['gini', 'entropy'],
 #                      'bootstrap':[True, False],
 #                      'n_estimators': [100, 150, 200, 250, 300]}
-        
+
 #        Best parameters:                  (found in previous run)
-        param_grid = {'max_features': [24], 'max_depth': [None], 'min_samples_split': [2], 
+        param_grid = {'max_features': [len(self.featureList)], 'max_depth': [None], 'min_samples_split': [2],
                       'min_samples_leaf': [10], 'criterion': ['gini'], 'bootstrap': [True],
                       'n_estimators': [200]}
-
 
         # find best parameters
         self.clf = GridSearchCV(clf_raw, param_grid=param_grid, cv=10, scoring="accuracy", n_jobs=2, verbose=True)
@@ -74,12 +70,6 @@ class ExtraTreesModel(Model):
         self.acc = self.clf.best_score_
         print("Model with best parameters, average accuracy over K-folds:", self.acc)
 
-
-        # # Cross-Validation to get performance estimate
-        # # NOTE: this gives a performance indication of clf_raw, not clf with the optimal parameters from the gridsearch
-        # clf_raw = ExtraTreesClassifier(bootstrap=True, min_samples_leaf=3, min_samples_split=10, criterion='gini', max_features=4,max_depth=None, n_estimators=250)
-        # cv_scores = CV.KFold(train_X, train_Y, clf_raw)
-        # print("Best accuracy:", str(np.max(cv_scores)) , ". Mean:", str(np.mean(cv_scores)), "| Std:", str(np.std(cv_scores)))
 
 
     # predict the test set

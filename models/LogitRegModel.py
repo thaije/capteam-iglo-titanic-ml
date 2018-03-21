@@ -21,16 +21,13 @@ class LogitRegModel(Model):
         # we only want numerical variables
         self.featureList = list(x_train.dtypes[x_train.dtypes != 'object'].index)
 
-        # TODO: remove this later
-        # Check feature importances for basic classifier
-        # import feature_selection as fs
-        # clf = RandomForestClassifier()
-        # clf.fit(x_train[self.featureList], y_train)
-        # fs.analyze_feature_importance(clf, self.featureList)
+        self.featureList = ['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare',
+            'Embarked', 'Age*Class', 'Ticket_firstchar',
+            'FamilySize', 'IsAlone',
+            'Embarked_1', 'Embarked_2', 'Embarked_3', 'Title_1', 'Title_2',
+            'Title_3', 'Title_4', 'Title_5']
 
-        # print( "Feature list after feature selection:" )
-        # print(self.featureList)
-
+        print(self.featureList)
         return self.featureList
 
 
@@ -65,11 +62,6 @@ class LogitRegModel(Model):
         self.acc = self.clf.best_score_
         print("Model with best parameters, average accuracy over K-folds:", self.acc)
 
-        # # Cross-Validation to get performance estimate
-        # # NOTE: this gives a performance indication of clf_raw, not clf with the optimal parameters from the gridsearch
-        # clf_raw = RandomForestClassifier(bootstrap=True, min_samples_leaf=3, min_samples_split=10, criterion='gini', max_features=4,max_depth=None, n_estimators=250)
-        # cv_scores = CV.KFold(train_X, train_Y, clf_raw)
-        # print("Best accuracy:", str(np.max(cv_scores)) , ". Mean:", str(np.mean(cv_scores)), "| Std:", str(np.std(cv_scores)))
 
     # predict the test set
     def test(self, X_test, labels):

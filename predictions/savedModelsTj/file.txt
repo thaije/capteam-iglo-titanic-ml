@@ -1,0 +1,40 @@
+Using  Logit
+['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked', 'Age*Class', 'Ticket_firstchar', 'FamilySize', 'IsAlone', 'Embarked_1', 'Embarked_2', 'Embarked_3', 'Title_1', 'Titl
+e_2', 'Title_3', 'Title_4', 'Title_5']
+Training model..
+Best parameters:
+{'C': 1, 'penalty': 'l1'}
+
+Model with best parameters, average accuracy over K-folds: 0.8240635641316686
+Predicting test set..
+Predictions written to  predictions/Logit.csv
+Accuracy on test set is: 0.777511961722488
+
+
+Using  AdaBoost
+['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked', 'Fare_cat', 'Age*Class', 'Ticket_firstchar', 'FamilySize', 'IsAlone', 'Embarked_1', 'Embarked_2', 'Embarked_3
+', 'Title_1', 'Title_2', 'Title_3', 'Title_4', 'Title_5']
+Training model..
+Fitting 10 folds for each of 1 candidates, totalling 10 fits
+[Parallel(n_jobs=2)]: Done  10 out of  10 | elapsed:    2.1s finished
+Best parameters:
+{'algorithm': 'SAMME', 'base_estimator__criterion': 'entropy', 'base_estimator__max_depth': 3, 'base_estimator__max_features': 4, 'base_estimator__min_samples_leaf': 10, 'b
+ase_estimator__min_samples_split': 2, 'base_estimator__splitter': 'random', 'learning_rate': 0.1, 'n_estimators': 200}
+Model with best parameters, average accuracy over K-folds: 0.8274687854710556
+Predicting test set..
+Predictions written to  predictions/AdaBoost.csv
+Accuracy on test set is: 0.7870813397129187
+
+
+Using  ET
+['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked', 'Age_cat', 'Fare_cat', 'Age*Class', 'Ticket_firstchar', 'FamilySize', 'FamilySize_cat', 'IsAlone', 'Title', '
+Title_alt', 'Embarked_1', 'Embarked_2', 'Embarked_3', 'Title_1', 'Title_2', 'Title_3', 'Title_4', 'Title_5']
+Training model..
+Fitting 10 folds for each of 1 candidates, totalling 10 fits
+[Parallel(n_jobs=2)]: Done  10 out of  10 | elapsed:    2.3s finished
+Best parameters:
+{'bootstrap': True, 'criterion': 'gini', 'max_depth': None, 'max_features': 24, 'min_samples_leaf': 10, 'min_samples_split': 2, 'n_estimators': 200}
+Model with best parameters, average accuracy over K-folds: 0.8308740068104427
+Predicting test set..
+Predictions written to  predictions/ET.csv
+Accuracy on test set is: 0.7799043062200957

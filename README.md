@@ -24,7 +24,7 @@ Below some points which were found by running some models (RF, SVM, GRBT, all wi
 - As KNN is of limited complexity it does not cope well with too much features.
 - KNN seems to work much best with binned features, E.g. replacing Age_cat, Fare_cat, etc for their non-binned version reduces test set performance by ~10%.
 - Bayes seems similar to KNN, doesn't like too many features
-- MLP seems to like as many features as you can throw at it, the more (good features) the better
+- MLP, ExtraTrees seem to like as many features as you can throw at it, the more (good features) the better
 - One-hot encoding the Decks seems to lead to overfitting -> Train score higher, test score lower (tested on RF, SVM, GRBT). Probably because of lots of missing data
 - Same problem for Namelength as with Deck
 

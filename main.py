@@ -87,8 +87,8 @@ class Pipeline(object):
         print("Accuracy on test set is:", testAccuracy(ve.name))
 
         # show accuracies and correlation of models
-        # plottery.compareModelAcc(self.models)
-        # plottery.plotModelCorrelation(self.models)
+        plottery.compareModelAcc(self.models)
+        plottery.plotModelCorrelation(self.models)
 
 
 if __name__ == '__main__':
