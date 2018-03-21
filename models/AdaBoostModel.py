@@ -54,7 +54,7 @@ class AdaBoostModel(Model):
         # Best parameters	              (found in a previous run)
         param_grid = {'n_estimators': [200],
                       'learning_rate': [0.1],
-                      'algorithm': ['SAMME', 'SAMME.R'],
+                      'algorithm': ['SAMME'],
                       'base_estimator__max_depth': [3],
                       'base_estimator__criterion': ['entropy'],
                       'base_estimator__splitter': ['random'],

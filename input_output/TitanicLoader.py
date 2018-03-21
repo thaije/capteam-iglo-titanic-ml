@@ -1,4 +1,5 @@
 from input_output.Loader import Loader
+from joblib import load
 
 # Loader specific for the Titanic task
 # The loader loads the data
@@ -27,3 +28,6 @@ class TitanicLoader(Loader):
         train_Y = train_X["Survived"]
         del train_X["Survived"]
         return train_X, train_Y
+    
+    def load_model(self, file_name):
+        return load(file_name) 
