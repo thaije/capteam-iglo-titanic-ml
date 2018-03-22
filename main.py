@@ -81,16 +81,16 @@ class Pipeline(object):
         # NOTE: assumes you trained your model with Gridsearch
         ve = VotingEnsemble(params=[], models=self.models)
         ve.feature_selection(x_train, y_train)
-        ve.train(x_train, y_train)
-        # ve.test(x_test, test_labels)
-        # self.saver.save_predictions(ve.predictions, 'predictions/' + ve.name + '.csv')
-        # print("Accuracy on test set is:", testAccuracy(ve.name))
-        
-        # # show accuracies and correlation of models
-        # plottery.compareModelAcc(self.models)
-        # plottery.plotModelCorrelation(self.models)
+        ve.test(x_test, test_labels)
+        self.saver.save_predictions(ve.predictions, 'predictions/' + ve.name + '.csv')
+        print("Accuracy on test set is:", testAccuracy(ve.name))
+
+        # show accuracies and correlation of models
+        plottery.compareModelAcc(self.models)
+        plottery.plotModelCorrelation(self.models)
 
 
 if __name__ == '__main__':
     Pipeline(loader=TitanicLoader, preprocessor=TitanicPreprocessor, features=TitanicFeatures,
-                 models=[RF, KNN, Bayes], saver=TitanicSaver).run()
+                 models=[KNN, SVM, Bayes, RF, GRBT, XGBoost], saver=TitanicSaver).run()
+    # works nice: models=[KNN, SVM, Bayes, RF, GRBT, XGBoost]

@@ -30,46 +30,45 @@ class VotingEnsemble(object):
         self.featureList = list(train_X.dtypes[train_X.dtypes != 'object'].index)
         return self.featureList
 
+    def test(self, test_X, labels):
+        print("\nUsing ", self.name)
 
-    def train(self, train_X, train_Y):
-        train_X = np.array(train_X[self.featureList])
-        train_Y = np.array(train_Y)
-
-        print("\n")
-
-        predictions = []
+        predictions = np.empty( (len(self.models), len(test_X)) )
 
         # load only the Survived predictions of each model and append to the list
-        for model in self.models:
+        for i, model in enumerate(self.models):
             df = pd.read_csv('predictions/' + model.name + '.csv')
             df = df.drop('PassengerId', axis=1)
             df.rename(columns = {'Survived':model.name}, inplace = True)
-            predictions.append(df)
-
-        print (len(predictions))
-        print(len(predictions[0]))
+            predictions[i] = np.array(df).ravel()
 
 
-
+        # TODO: do some weighting
+        weights = [1 for model in self.models]
 
         # # Tuning weights - first implementation
         # accs = [testAccuracy(model.name) for model in self.models]
         # accs5 = [testAccuracy(model.name)**5 for model in self.models] # Basically would make accuracies of 50% count as nothing and exponentially increase importance of accruacy
         # accs3 = [testAccuracy(model.name)**3 for model in self.models]
-        # param_grid = {'weights': [accs, None, accs5, accs3]}
 
-
-
-
-
-
-    def test(self, test_X, labels):
         print("Generating predictions..")
 
-        test_X = np.array(test_X[self.featureList])
-        pred_Y = self.clf.predict(test_X)
-
-        # Write predictions to csv file
         self.predictions = []
-        for i, prediction in enumerate(pred_Y):
-            self.predictions.append([labels[i], prediction])
+        # For every item in the test set, calculate the ensemble prediction
+        for i in range(len(test_X)):
+            # get predictions of models for this passenger
+            preds = predictions[:,i].astype(int)
+
+            # TODO: use weights
+
+            # Option 1: Use most occuring prediction value
+            majorityVote = np.bincount(preds).argmax()
+            self.predictions.append([labels[i], majorityVote])
+            # print(preds , " - ", majorityVote)
+
+            # Option 2: Calc average and round
+            # avg = int(np.around(np.mean(preds)))
+            # self.predictions.append([labels[i], avg])
+            # print(preds , " - ", avg)
+
+            i += 1

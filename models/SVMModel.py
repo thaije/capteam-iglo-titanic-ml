@@ -39,7 +39,7 @@ class SVM(Model):
         ]
 
         # optimize on SVM with no added in probability estimates
-        clf_raw = svm.SVC(probability=False)
+        clf_raw = svm.SVC()
         self.clf = GridSearchCV(clf_raw, param_grid, cv=10, scoring="accuracy", n_jobs=2)
 
         self.clf.fit(train_X, train_Y)
@@ -48,8 +48,8 @@ class SVM(Model):
 
         bestParams = self.clf.best_params_
 
-        # fit an SVM with probability estimates directly with the best params
-        self.clf.best_estimator_ = svm.SVC(C =bestParams['C'], kernel=bestParams['kernel'], probability=True).fit(train_X,train_Y)
+        # # fit an SVM with probability estimates directly with the best params
+        # self.clf.best_estimator_ = svm.SVC(C =bestParams['C'], kernel=bestParams['kernel'], probability=True).fit(train_X,train_Y)
 
 
         # Cross Validation
