@@ -37,3 +37,6 @@ Points:
 - model selection for ensembles
 - do we know how the models work? feature selection for some?
 - Alternative for CV, Stratified CV? Better train score seems to indicate overfitting, as test score gets lower.
+
+
+![Pipeline](https://github.com/thaije/capteam-iglo-titanic-ml/blob/master/Titanic%20pipeline.png)
