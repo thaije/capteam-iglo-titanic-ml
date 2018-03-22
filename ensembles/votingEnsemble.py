@@ -35,37 +35,32 @@ class VotingEnsemble(object):
         train_X = np.array(train_X[self.featureList])
         train_Y = np.array(train_Y)
 
-        modelTupleList = []
+        print("\n")
 
-        try:
-            # create a list of tuples with the model name and best model estimator from
-            # the gridsearch
-            for model in self.models:
-                modelTupleList.append((model.name, model.clf.best_estimator_))
-        except AttributeError:
-            print("Error: Ensemble model expects the best estimator under model.clf.best_estimator_ (default location after gridsearch), but could not locate it for " , model.name)
-            sys.exit()
+        predictions = []
 
-        print ("\nTraining voting classifier..")
+        # load only the Survived predictions of each model and append to the list
+        for model in self.models:
+            df = pd.read_csv('predictions/' + model.name + '.csv')
+            df = df.drop('PassengerId', axis=1)
+            df.rename(columns = {'Survived':model.name}, inplace = True)
+            predictions.append(df)
 
-        # Tuning weights - first implementation
-        accs = [testAccuracy(model.name) for model in self.models]
-        accs5 = [testAccuracy(model.name)**5 for model in self.models] # Basically would make accuracies of 50% count as nothing and exponentially increase importance of accruacy
-        accs3 = [testAccuracy(model.name)**3 for model in self.models]
-        param_grid = {'weights': [accs, None, accs5, accs3]}
+        print (len(predictions))
+        print(len(predictions[0]))
 
 
-        # fit the voting classifier
-        clf_raw= VotingClassifier(estimators = modelTupleList, voting='soft', n_jobs=4)
-        self.clf = GridSearchCV(clf_raw, param_grid=param_grid)
 
 
-        scores = cross_val_score(estimator = self.clf, X=train_X, y=train_Y, cv=10, scoring='accuracy', n_jobs=1)
-        print("10-fold CV over train set: average", np.mean(scores), " std:", np.std(scores), " highest:", np.max(scores))
-        self.clf.fit(train_X, train_Y)
+        # # Tuning weights - first implementation
+        # accs = [testAccuracy(model.name) for model in self.models]
+        # accs5 = [testAccuracy(model.name)**5 for model in self.models] # Basically would make accuracies of 50% count as nothing and exponentially increase importance of accruacy
+        # accs3 = [testAccuracy(model.name)**3 for model in self.models]
+        # param_grid = {'weights': [accs, None, accs5, accs3]}
 
-        print("Best parameters:")
-        print(self.clf.best_params_)
+
+
+
 
 
     def test(self, test_X, labels):
