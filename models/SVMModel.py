@@ -47,12 +47,13 @@ class SVM(Model):
         self.acc = self.clf.best_score_
 
         bestParams = self.clf.best_params_
+
         # fit an SVM with probability estimates directly with the best params
-        self.clf = svm.SVC(C =bestParams['C'], kernel=bestParams['kernel'], probability=True).fit(train_X,train_Y)
+        self.clf.best_estimator_ = svm.SVC(C =bestParams['C'], kernel=bestParams['kernel'], probability=True).fit(train_X,train_Y)
 
 
         # Cross Validation
-      #  self.clf, self.acc, scores = CV.KFold(train_X, train_Y, clf, 4)
+       #  self.clf, self.acc, scores = CV.KFold(train_X, train_Y, clf, 4)
         # self.clf, optimalScore, scores = CV.RepeatedKFold(X_train, y_train, clf, 10, 10)
         # self.clf, optimalScore, scores = CV.LeaveOneOut(X_train, y_train, clf)
         # self.clf, optimalScore, scores = CV.StratifiedKFold(X_train, y_train, clf, 10)
