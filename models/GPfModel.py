@@ -1,3 +1,5 @@
+from pandas import DataFrame
+from pandas.core.internals import _block_shape
 from sklearn.base import BaseEstimator, ClassifierMixin
 import numpy as np
 from models.Model import Model
@@ -21,7 +23,7 @@ class GeneticClassifier(BaseEstimator, ClassifierMixin):
 
     def fit(self, X, y=None):
         """
-        This should fit classifier. All the "work" should be done here.
+            This should fit classifier. All the "work" should be done here.
 
         Note: assert is not a good choice here and you should rather
         use try/except blog with exceptions. This is just for short syntax.
@@ -93,9 +95,9 @@ class GeneticClassifier(BaseEstimator, ClassifierMixin):
     def _MungeData(self, data):
         # Sex
         data.drop(['Ticket', 'Name'], inplace=True, axis=1)
-        data.Sex.fillna('0', inplace=True)
-        data.loc[data.Sex != 'male', 'Sex'] = 0
-        data.loc[data.Sex == 'male', 'Sex'] = 1
+        # data.Sex.fillna('0', inplace=True)
+        # data.loc[data.Sex != 'male', 'Sex'] = 0
+        # data.loc[data.Sex == 'male', 'Sex'] = 1
         # Cabin
         data.Cabin.fillna('0', inplace=True)
         data.loc[data.Cabin.str[0] == 'A', 'Cabin'] = 1
@@ -107,12 +109,12 @@ class GeneticClassifier(BaseEstimator, ClassifierMixin):
         data.loc[data.Cabin.str[0] == 'G', 'Cabin'] = 7
         data.loc[data.Cabin.str[0] == 'T', 'Cabin'] = 8
         # Embarked
-        data.loc[data.Embarked == 'C', 'Embarked'] = 1
-        data.loc[data.Embarked == 'Q', 'Embarked'] = 2
-        data.loc[data.Embarked == 'S', 'Embarked'] = 3
+        data.loc[data.Embarked == 2, 'Embarked'] = 1
+        data.loc[data.Embarked == 3, 'Embarked'] = 2
+        data.loc[data.Embarked == 1, 'Embarked'] = 3
         data.Embarked.fillna(0, inplace=True)
-        data.fillna(-1, inplace=True)
-        return data.astype(float)
+        # data.fillna(-1, inplace=True)
+        return data.select_dtypes(exclude=['category']).astype(np.float32)
 
     def predict(self, X, y=None):
         mungedtrain = self._MungeData(X)
@@ -142,38 +144,14 @@ class GPf(Model):
         self.train_set_size = -1
         # used for the name of the prediction file
         self.name = "GPf"
+        self.clf = GeneticClassifier()
 
     def feature_selection(self, x_train, y_train):
         pass
 
     # train the model with the features determined in feature_selection()
     def train(self, train_X, train_Y, model_args):
-
-
-        print("Training model..")
-
-        # Hyper-parameter tuning
-        clf_raw = GeneticClassifier()
-        param_grid = {"intValue" : [-10,-1,0,1,10]} # Just for show, not for do
-
-
-        # find best parameters
-        self.clf = GridSearchCV(clf_raw, param_grid=param_grid, cv=10, scoring="accuracy", n_jobs=2)
-        self.clf.fit(train_X, train_Y)
-
-        print("Best parameters:")
-        print(self.clf.best_params_)
-
-        # print best performance of best model of gridsearch with cv
-        self.acc = self.clf.best_score_
-        print("Model with best parameters, average accuracy over K-folds:", self.acc)
-
-
-        # # Cross-Validation to get performance estimate
-        # # NOTE: this gives a performance indication of clf_raw, not clf with the optimal parameters from the gridsearch
-        # clf_raw = RandomForestClassifier(bootstrap=True, min_samples_leaf=3, min_samples_split=10, criterion='gini', max_features=4,max_depth=None, n_estimators=250)
-        # cv_scores = CV.KFold(train_X, train_Y, clf_raw)
-        # print("Best accuracy:", str(np.max(cv_scores)) , ". Mean:", str(np.mean(cv_scores)), "| Std:", str(np.std(cv_scores)))
+        pass
 
 
     # predict the test set
@@ -187,4 +165,4 @@ class GPf(Model):
         self.predictions = []
         for i, prediction in enumerate(y_pred):
             self.predictions.append([labels[i], prediction])
-        pass
+        # self.acc = self.clf.best_score_

@@ -3,6 +3,7 @@ import pandas as pd
 import auxiliary.modelPlots as plottery
 import auxiliary.outlierDetection as outliers
 from input_output.TitanicLoader import TitanicLoader
+from models.GPfModel import GPf
 from preprocessing.TitanicPreprocessor import TitanicPreprocessor
 from featureEngineering.TitanicFeatures import TitanicFeatures
 from input_output.TitanicSaver import TitanicSaver
@@ -86,11 +87,11 @@ class Pipeline(object):
         print("Accuracy on test set is:", testAccuracy(ve.name))
 
         # show accuracies and correlation of models
-        plottery.compareModelAcc(self.models)
-        plottery.plotModelCorrelation(self.models)
+        # plottery.compareModelAcc(self.models)
+        # plottery.plotModelCorrelation(self.models)
 
 
 if __name__ == '__main__':
     Pipeline(loader=TitanicLoader, preprocessor=TitanicPreprocessor, features=TitanicFeatures,
-                 models=[KNN, SVM, Bayes, RF, GRBT, XGBoost], saver=TitanicSaver).run()
+                 models=[KNN, SVM, Bayes, RF, GRBT, XGBoost, GPf], saver=TitanicSaver).run()
     # works nice: models=[KNN, SVM, Bayes, RF, GRBT, XGBoost]
