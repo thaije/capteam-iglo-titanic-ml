@@ -6,7 +6,7 @@ from sklearn.model_selection import cross_val_score
 from validation.testPerformance import testAccuracy
 from sklearn.model_selection import GridSearchCV
 np.warnings.filterwarnings('ignore') # annoying np warning in sklearn version
-
+from ensembles.ensembleWeighter import ensembleWeighter
 
 # Settings
 # voting = 'soft' = averaging (best when models are close in performance)
@@ -40,16 +40,8 @@ class VotingEnsemble(object):
             df = pd.read_csv('predictions/' + model.name + '.csv')
             df = df.drop('PassengerId', axis=1)
             df.rename(columns = {'Survived':model.name}, inplace = True)
+
             predictions[i] = np.array(df).ravel()
-
-
-        # TODO: do some weighting
-        weights = [1 for model in self.models]
-
-        # # Tuning weights - first implementation
-        # accs = [testAccuracy(model.name) for model in self.models]
-        # accs5 = [testAccuracy(model.name)**5 for model in self.models] # Basically would make accuracies of 50% count as nothing and exponentially increase importance of accruacy
-        # accs3 = [testAccuracy(model.name)**3 for model in self.models]
 
         print("Generating predictions..")
 
@@ -59,16 +51,5 @@ class VotingEnsemble(object):
             # get predictions of models for this passenger
             preds = predictions[:,i].astype(int)
 
-            # TODO: use weights
-
-            # Option 1: Use most occuring prediction value
-            majorityVote = np.bincount(preds).argmax()
-            self.predictions.append([labels[i], majorityVote])
-            # print(preds , " - ", majorityVote)
-
-            # Option 2: Calc average and round
-            # avg = int(np.around(np.mean(preds)))
-            # self.predictions.append([labels[i], avg])
-            # print(preds , " - ", avg)
-
-            i += 1
+            vote = ensembleWeighter(self.models, preds, mode= 'soft', pow=np.exp(1), dropout=True, p_dropout = 0.3)
+            self.predictions.append([labels[i], vote])
