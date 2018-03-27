@@ -15,7 +15,7 @@ class XGBoost(Model):
     def feature_selection(self, x_train, y_train):
         # we only want numerical variables
         self.featureList = list(x_train.dtypes[x_train.dtypes != 'object'].index)
-        self.featureList = ['Pclass', 'Sex', 'Age', 'Fare',
+        self.featureList = ['Pclass', 'Sex', 'Age', 'Fare_PP',
             'Embarked', 'Age*Class', 'Ticket_firstchar',
             'FamilySize', 'Title', 'Embarked_1',
             'Embarked_2', 'Embarked_3', 'Title_1', 'Title_2', 'Title_3', 'Title_4', 'Title_5']

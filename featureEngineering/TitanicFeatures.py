@@ -15,12 +15,13 @@ class TitanicFeatures(Features):
         # Put features in bins with a numerical ID, to make it easier to train on
         data = binAge(data)
         data = binFares(data)
-
+        # extract fare per person
+        data = extractFarePP(data)
         # Create new features by combining existing ones
         data = combineAgePClass(data)
 
         # Engineer completely new features
-        data = createTicketFirstChar(data)
+        data = createTicketFeatures(data)
         data = createFamilySize(data)
         data = createFamilySizeBinned(data)
         data = createIsAlone(data)
@@ -77,13 +78,26 @@ def combineAgePClass(data):
     return data
 
 # Create a new feature from the first character of the Ticket
-def createTicketFirstChar(data):
+def createTicketFeatures(data):
     data['Ticket_firstchar'] = data['Ticket']
     data.Ticket_firstchar = data.Ticket_firstchar.map(lambda x: x[0])
     data["Ticket_firstchar"].replace(['A', 'P', 'S', 'C', 'W', 'F', 'L', '1','2','3','4','5','6','7','8','9'], [10,11,12,13,14,15,16,1,2,3,4,5,6,7,8,9], inplace=True)
 
+    # extract ticket prefix
+    data['Ticket_prefix'] = data['Ticket'].map(lambda x: extract_prefix(x))
+    # number codes
+    data['Ticket_prefix'] = data['Ticket_prefix'].astype('category').cat.codes
+
     return data
 
+def extract_prefix(string):
+    parts = string.split(" ")
+    if len(parts) > 1:
+        # filter out non-alphabetic characters to reduce variability
+        toReturn = re.sub(r'\W+', '', parts[0])
+        return toReturn
+    else:
+        return 'None'
 
 # Create new feature familysize= self + sibelings/spouse + Parents/children
 def createFamilySize(data):
@@ -135,7 +149,14 @@ def extractCabinFeatures(data):
     data = one_hot(data, ['Deck'], drop_col=False)
     return data
 
+def extractFarePP(data):
+    # count how often the ticket names are present
+    counts = data['Ticket'].value_counts()
+    # for each person, store how many other people travel on the same ticket
+    data['Ticket_count'] = data.Ticket.map(lambda x : counts[x])
+    data['Fare_PP'] = data['Fare'] / data['Ticket_count']
 
+    return data
 
 # create a new feature which classifies people based on their title,
 # with categories "Mr": 1, "Miss": 2, "Mrs": 3, "Master": 4, "Rare": 5
