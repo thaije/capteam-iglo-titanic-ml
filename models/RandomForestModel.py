@@ -2,8 +2,6 @@ from models.Model import Model
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV
 import numpy as np
-import validation.CrossValidate as CV
-
 
 # This model contains the code for a RandomForest model for the Titanic task, including
 # feature selection, training and testing methods.

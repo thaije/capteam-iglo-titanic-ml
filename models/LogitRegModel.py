@@ -47,9 +47,6 @@ class LogitRegModel(Model):
         clf_raw = LogisticRegression()
         param_grid = {'C': [1000, 100, 10, 1, 0.1, 0.01, 0.01, 0.001],
                       'penalty': ['l1', 'l2']}
-                     # 'solver': ['newton-cg', 'lbfgs', 'liblinear', 'sag', 'saga']]}
-                     # 'multiclass': ['ovr', 'multinomial']
-                     # maxiter ???
 
         # find best parameters
         self.clf = GridSearchCV(clf_raw, param_grid=param_grid, cv=10, scoring="accuracy", n_jobs=2)

@@ -1,8 +1,8 @@
 import argparse
 import pandas as pd
+from os.path import isfile
 import auxiliary.modelPlots as plottery
 import auxiliary.outlierDetection as outliers
-from os.path import isfile
 from input_output.TitanicLoader import TitanicLoader
 from preprocessing.TitanicPreprocessor import TitanicPreprocessor
 from featureEngineering.TitanicFeatures import TitanicFeatures
@@ -14,7 +14,7 @@ from models.SVMModel import SVM
 from models.KNNModel import KNN
 from models.MLPModel import MLP
 from models.GRBTModel import GRBT
-from models.XGBoostModel import XGBoost
+#from models.XGBoostModel import XGBoost
 from models.BayesModel import Bayes
 from models.AdaBoostModel import AdaBoostModel as AdaBoost
 from models.ExtraTreesModel import ExtraTreesModel as ET
@@ -23,7 +23,7 @@ from models.LogitRegModel import LogitRegModel as Logit
 
 class Pipeline(object):
     def __init__(self, loader=TitanicLoader, preprocessor=TitanicPreprocessor, features=TitanicFeatures,
-             models=[RF], saver=TitanicSaver, save_trained_model=False, load_trained_model=False):
+             models=[RF], saver=TitanicSaver, training_mode=False):
         parser = argparse.ArgumentParser()
         self.args = parser.parse_args()
         self.params = None
@@ -39,8 +39,7 @@ class Pipeline(object):
         self.models = [m(self.params) for m in models]
         self.saver = saver()
         
-        self.save_trained_model = save_trained_model
-        self.load_trained_model = load_trained_model
+        self.training_mode = training_mode
         
     def run(self):
         # load data. Test_labels are PassengerIds which we need to save for the submission
@@ -68,24 +67,19 @@ class Pipeline(object):
         # train all the models
         for model in self.models:
             print ("\nUsing " , model.name)
-
-            # Load model from 'saved_models' folder if desired and available,
-            # else train the model from the beginning.
-            if self.load_trained_model and isfile('saved_models/' + model.name + '.pkl'):
-                model = self.loader.load_model('saved_models/' + model.name + '.pkl')                    
+            
+            # Load model from 'saved_models' folder if not training and if it's available.
+            if not self.training_mode and isfile('saved_models/' + model.name + '.pkl'):
+                model = self.loader.load_pkl('saved_models/' + model.name + '.pkl')     
+            # Else, train model from scratch in training or if no saved model is available during testing.
             else:
                 # Warning message if we want to load a model but it does not exist.
-                if self.load_trained_model:
+                if not self.training_mode:
                     print("Saved model not found..")
                 # Check which features are optimal for this model, and train the model with them
                 model.feature_selection(x_train, y_train)
                 model.train(x_train, y_train, self.model_params)
-            
-                # Save trained model to disk if desired.
-                if self.save_trained_model:
-                    print("Model saved to  saved_models/" + model.name + ".pkl")
-                    self.saver.save_model(model, 'saved_models/' + model.name + '.pkl')
-
+                    
             # Generate predictions for the test set and write to a csv file
             print ("Predicting test set..")
             model.test(x_test, test_labels)
@@ -93,6 +87,10 @@ class Pipeline(object):
 
             print("Accuracy on test set is:", testAccuracy(model.name))
 
+        # Save improved models and scores to disk (in training mode)
+        if self.training_mode:
+            test_accuracies = [ testAccuracy(model.name) for model in self.models ]
+            self.saver.save_models(self.models, test_accuracies)
 
         # Create ensemble from all the trained models, and test the predictions output
         # NOTE: assumes you trained your model with Gridsearch
@@ -110,5 +108,5 @@ class Pipeline(object):
 
 if __name__ == '__main__':
     Pipeline(loader=TitanicLoader, preprocessor=TitanicPreprocessor, features=TitanicFeatures,
-                 models=[RF, MLP, SVM, GRBT, XGBoost, KNN, Bayes, Logit, ET, AdaBoost], saver=TitanicSaver, 
-                 save_trained_model=True, load_trained_model=True).run()
+                 models=[RF, MLP, SVM, KNN, Bayes, GRBT, Logit, ET, AdaBoost], saver=TitanicSaver, 
+                 training_mode=True).run()
