@@ -14,12 +14,12 @@ from models.SVMModel import SVM
 from models.KNNModel import KNN
 from models.MLPModel import MLP
 from models.GRBTModel import GRBT
-from models.XGBoostModel import XGBoost
+# from models.XGBoostModel import XGBoost
 from models.BayesModel import Bayes
 from models.AdaBoostModel import AdaBoostModel as AdaBoost
 from models.ExtraTreesModel import ExtraTreesModel as ET
 from models.LogitRegModel import LogitRegModel as Logit
-
+from models.GPModel import GP as GP
 
 class Pipeline(object):
     def __init__(self, loader=TitanicLoader, preprocessor=TitanicPreprocessor, features=TitanicFeatures,
@@ -92,6 +92,8 @@ class Pipeline(object):
 
 
 if __name__ == '__main__':
-    Pipeline(loader=TitanicLoader, preprocessor=TitanicPreprocessor, features=TitanicFeatures,
-                 models=[KNN, SVM, Bayes, RF, GRBT, XGBoost, GPf], saver=TitanicSaver).run()
+    # Pipeline(loader=TitanicLoader, preprocessor=TitanicPreprocessor, features=TitanicFeatures,
+    #              models=[KNN, SVM, Bayes, RF, GRBT, XGBoost, GPf], saver=TitanicSaver).run()
     # works nice: models=[KNN, SVM, Bayes, RF, GRBT, XGBoost]
+    Pipeline(loader=TitanicLoader, preprocessor=TitanicPreprocessor, features=TitanicFeatures,
+                 models=[KNN, GP], saver=TitanicSaver).run()
