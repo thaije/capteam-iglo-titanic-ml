@@ -1,4 +1,4 @@
-import argparse
+import argparse, sys
 import pandas as pd
 from os.path import isfile
 import auxiliary.modelPlots as plottery
@@ -14,7 +14,8 @@ from models.SVMModel import SVM
 from models.KNNModel import KNN
 from models.MLPModel import MLP
 from models.GRBTModel import GRBT
-#from models.XGBoostModel import XGBoost
+from models.GPModel import GP
+from models.XGBoostModel import XGBoost
 from models.BayesModel import Bayes
 from models.AdaBoostModel import AdaBoostModel as AdaBoost
 from models.ExtraTreesModel import ExtraTreesModel as ET
@@ -38,9 +39,9 @@ class Pipeline(object):
 
         self.models = [m(self.params) for m in models]
         self.saver = saver()
-        
-        self.training_mode = training_mode
-        
+
+        self.training_mode = False
+
     def run(self):
         # load data. Test_labels are PassengerIds which we need to save for the submission
         x_train, y_train, x_test, test_labels = self.loader.load_split(training_data_file=self.training_data_file, test_data_file=self.test_data_file)
@@ -67,10 +68,10 @@ class Pipeline(object):
         # train all the models
         for model in self.models:
             print ("\nUsing " , model.name)
-            
+
             # Load model from 'saved_models' folder if not training and if it's available.
             if not self.training_mode and isfile('saved_models/' + model.name + '.pkl'):
-                model = self.loader.load_pkl('saved_models/' + model.name + '.pkl')     
+                model = self.loader.load_pkl('saved_models/' + model.name + '.pkl')
             # Else, train model from scratch in training or if no saved model is available during testing.
             else:
                 # Warning message if we want to load a model but it does not exist.
@@ -79,7 +80,7 @@ class Pipeline(object):
                 # Check which features are optimal for this model, and train the model with them
                 model.feature_selection(x_train, y_train)
                 model.train(x_train, y_train, self.model_params)
-                    
+
             # Generate predictions for the test set and write to a csv file
             print ("Predicting test set..")
             model.test(x_test, test_labels)
@@ -96,10 +97,13 @@ class Pipeline(object):
         # NOTE: assumes you trained your model with Gridsearch
         ve = VotingEnsemble(params=[], models=self.models)
         ve.feature_selection(x_train, y_train)
-        ve.train(x_train, y_train)
         ve.test(x_test, test_labels)
         self.saver.save_predictions(ve.predictions, 'predictions/' + ve.name + '.csv')
         print("Accuracy on test set is:", testAccuracy(ve.name))
+
+        if testAccuracy(ve.name) > 0.799:
+            print("Had a good result, stopping")
+            sys.exit(0)
 
         # show accuracies and correlation of models
         # plottery.compareModelAcc(self.models)
@@ -107,6 +111,11 @@ class Pipeline(object):
 
 
 if __name__ == '__main__':
+
     Pipeline(loader=TitanicLoader, preprocessor=TitanicPreprocessor, features=TitanicFeatures,
-                 models=[RF, MLP, SVM, KNN, Bayes, GRBT, Logit, ET, AdaBoost], saver=TitanicSaver, 
-                 training_mode=True).run()
+            models=[RF, KNN, ET, SVM, Logit, Bayes], saver=TitanicSaver,
+            training_mode=True).run()
+
+    # works nice: RF, KNN, ET, SVM, Logit, Bayes
+    # works nice: RF, KNN, ET, SVM, AdaBoost, Bayes
+    # all models = Bayes, GP, GRBT, RF, AdaBoost, Logit, SVM, XGBoost, MLP, KNN, ET

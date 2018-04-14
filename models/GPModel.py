@@ -56,6 +56,7 @@ class GP(Model):
         y_gp = np.around(self.clf.predict(X))
         acc_gp = np.sum(y_gp == y) / len(y)
         print("Accuracy GP on train set:", str(acc_gp))
+        self.acc = acc_gp
 
     # predict the test set
     def test(self, X_test, labels):
@@ -67,4 +68,4 @@ class GP(Model):
         # Write predictions to csv file
         self.predictions = []
         for i, prediction in enumerate(y_pred):
-            self.predictions.append([labels[i], prediction])
+            self.predictions.append([labels[i], int(prediction)])

@@ -9,11 +9,13 @@ def compareModelAcc(models):
     cv_means = []
     cv_std = []
     model_names = []
+
     for model in models:
-        model_names.append(model.name)
-        cv_means.append(model.acc)
-        # cv_std.append(cv_result.std())
-        cv_std.append(0)
+        if hasattr(model, 'acc'):
+            model_names.append(model.name)
+            cv_means.append(model.acc)
+            # cv_std.append(cv_result.std())
+            cv_std.append(0)
 
     cv_res = pd.DataFrame({"CrossValMeans":cv_means,"CrossValerrors": cv_std,"Algorithm":model_names})
 

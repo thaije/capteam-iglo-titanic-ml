@@ -17,12 +17,13 @@ class GRBT(Model):
         # we only want numerical variables
         self.featureList = list(x_train.dtypes[x_train.dtypes != 'object'].index)
 
-        self.featureList = ['Pclass', 'Sex', 'Age', 'Fare_PP', 'Embarked',
-            'Age*Class', 'Ticket_firstchar', 'FamilySize', 'FamilySize_cat',
+        self.featureList = ['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare',
+            'Embarked', 'Fare_cat', 'Age*Class', 'Ticket_firstchar',
+            'FamilySize', 'IsAlone',
             'Embarked_1', 'Embarked_2', 'Embarked_3', 'Title_1', 'Title_2',
             'Title_3', 'Title_4', 'Title_5']
         print(self.featureList)
-        
+
         return self.featureList
 
 
