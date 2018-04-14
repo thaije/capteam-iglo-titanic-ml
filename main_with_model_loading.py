@@ -101,10 +101,6 @@ class Pipeline(object):
         self.saver.save_predictions(ve.predictions, 'predictions/' + ve.name + '.csv')
         print("Accuracy on test set is:", testAccuracy(ve.name))
 
-        if testAccuracy(ve.name) > 0.799:
-            print("Had a good result, stopping")
-            sys.exit(0)
-
         # show accuracies and correlation of models
         # plottery.compareModelAcc(self.models)
         # plottery.plotModelCorrelation(self.models)
