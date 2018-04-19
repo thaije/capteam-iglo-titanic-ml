@@ -4,8 +4,12 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import sys
 
-# compares accuracies of classifiers optimized with gridsearch
 def compareModelAcc(models):
+    '''
+    Receives as input a list models, containing model objects.
+
+    Plots the accuracy of each model in a barplot.
+    '''
     cv_means = []
     cv_std = []
     model_names = []
@@ -25,8 +29,13 @@ def compareModelAcc(models):
     plt.show()
 
 
-# plot the correlation between the generated output predictions of each model
 def plotModelCorrelation(models):
+    '''
+    Receives as input a list models, containing model objects.
+
+    Calculates the correlation between each model of the output predictions.
+    The correlation here is defined as the overlap of the two prediction files.
+    '''
     predictions = []
 
     # load only the Survived predictions of each model and append to the list
@@ -44,10 +53,15 @@ def plotModelCorrelation(models):
     plt.show()
 
 
-# calculate the overlap between the given arrays. Thus: 2 models which have
-# prediction arrays containing only 2 identical predictions at the same index, and 98 wrong ones,
-# has an overlap of 0.02
+
 def overlap_correlation(ensemble_results):
+    '''
+    Receives as input a n-d array, with the predictions of each model in a seperate column
+
+    Calculates the overlap between the given arrays (containing predictions of a model).
+    Thus: 2 models which have prediction arrays containing only 2 identical
+    predictions at the same index, and 98 wrong ones, have an overlap of 0.02.
+    '''
     numeric_df = ensemble_results._get_numeric_data()
     cols = numeric_df.columns
     idx = cols.copy()

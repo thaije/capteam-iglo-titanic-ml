@@ -1,13 +1,20 @@
 # Capteam Iglo - Towards a Unitary Titanic Death Determinant Theory
 Code for Kaggle competition Titanic: Machine Learning from Disaster
+See report.pdf for more details.
 
 
-## How to import and run a Notebook
-- In this folder you have the Tjalling_notebook.ipynb file, you can import this in a kernel on Keggle.
-- Go to https://www.kaggle.com/c/titanic/kernels
-- Click new Kernel > Notebook
-- At the top press the cloud icon with the arrow, and upload the .ipynb file.
-- Run each codepart from top to bottom by clicking in the code, and pressing the play button.
+## Pipeline
+![Pipeline](https://github.com/thaije/capteam-iglo-titanic-ml/blob/master/Titanic%20pipeline.png)
+
+## How to run
+- Make sure you have Python 3.x.
+- Install the requirements from the requirements.txt file with pip3.
+- Run `python3 main.py` (trains everything)
+- Run `python3 main_with_model_loading.py`  (uses pretrained models)
+
+### Settings
+- Select models to use: In `main.py` or `main_with_model_loading.py`, change contents of models list at bottom of file.
+- Select training mode (`main_with_model_loading.py` only): set `self.training_mode` to `False` to use pretrained models, set `self.training_mode` to `True` to train the models on the data, and save the model instance if the performance is better than of the currently saved model instance.
 
 
 
@@ -27,16 +34,3 @@ Below some points which were found by running some models (RF, SVM, GRBT, all wi
 - MLP, ExtraTrees seem to like as many features as you can throw at it, the more (good features) the better
 - One-hot encoding the Decks seems to lead to overfitting -> Train score higher, test score lower (tested on RF, SVM, GRBT). Probably because of lots of missing data
 - Same problem for Namelength as with Deck
-
-
-This week:
-Points:
-- tweak ensemble, add weights
-- ensemble is shitty, it just redoes a fit on all data.  Feature selection has no use. 1 model with feature selection has other scores that its ensemble.
-- feature selection for models
-- model selection for ensembles
-- do we know how the models work? feature selection for some?
-- Alternative for CV, Stratified CV? Better train score seems to indicate overfitting, as test score gets lower.
-
-
-![Pipeline](https://github.com/thaije/capteam-iglo-titanic-ml/blob/master/Titanic%20pipeline.png)
